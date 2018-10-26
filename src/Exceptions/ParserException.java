@@ -1,11 +1,11 @@
 package Exceptions;
 
 public class ParserException extends Exception {
-    ParserException() {
+    public ParserException() {
         super();
     }
 
-    ParserException(String e) {
+    public ParserException(String e) {
         super(e);
     }
 }
