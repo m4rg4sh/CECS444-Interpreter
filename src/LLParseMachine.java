@@ -1,5 +1,5 @@
-import Exceptions.ParserException;
-import Exceptions.TokenInputMalformedException;
+import Exceptions.*;
+import PST.*;
 import Symbols.*;
 import Tokens.Token;
 
@@ -15,8 +15,9 @@ import java.util.Stack;
  * table, prediction stack, and token stream.
  */
 public class LLParseMachine {
+    private static final Symbol START_SYMBOL = NonTerminal.Pgm;
     private static final HashMap<Prediction, ArrayList<Symbol>> predictionTable = PredictionTableGenerator.createPredictionTable();
-    private Stack<Symbol> stack;
+    private Stack<PstNode> stack;
     private TokenStreamReader tokenStream;
     
     public static void main(String[] args){
@@ -29,9 +30,13 @@ public class LLParseMachine {
     }
 
     private LLParseMachine() {
-        stack = new Stack<>();
-        stack.push(Terminal.EOF);
         tokenStream = new TokenStreamReader(System.in);
+        initializeStack();
+    }
+
+    private void initializeStack() {
+        stack = new Stack<>();
+        stack.push(new PstInnerNode(START_SYMBOL));
     }
 
     private void parse() throws ParserException{
@@ -39,17 +44,21 @@ public class LLParseMachine {
         while(parsing) {
             try {
                 Token token = tokenStream.getNextToken();
-                Symbol topOfStack = stack.peek();
+                PstNode pstPointer = stack.pop();
+                Symbol topOfStack = pstPointer.getSymbol();
                 if (token.getId() == topOfStack.getId()) {
                     if (token.getId() == Terminal.EOF.getId()) {
                         parsing = false;
-                    } else {
-                        stack.pop();
                     }
+                    //pop & advance already done
                 } else if (topOfStack instanceof Terminal) {
                     throw new ParserException("ParseException");
                 } else {
-                    executeRule(topOfStack, token);
+                    if (pstPointer instanceof PstInnerNode) {
+                        executeRule(topOfStack, token, (PstInnerNode) pstPointer);
+                    } else {
+                        throw new ParserException("InnerNode expected, but LeafNode found");
+                    }
                 }
             } catch (IOException | TokenInputMalformedException e) {
                 throw new ParserException("Tokens Error");
@@ -57,14 +66,20 @@ public class LLParseMachine {
         }
     }
 
-    private void executeRule(Symbol topOfStack, Token token) throws ParserException {
+    private void executeRule(Symbol topOfStack, Token token, PstInnerNode parentNode) throws ParserException {
         Prediction prediction = new Prediction((NonTerminal) topOfStack, Terminal.valueOf(token.getId()));
         if (predictionTable.containsKey(prediction)) {
-            ArrayList<Symbol> cell = predictionTable.get(prediction);
-            stack.pop();
-            Collections.reverse(cell);
-            for (Symbol s : cell) {
-                stack.push(s);
+            ArrayList<Symbol> rhsOfRule = predictionTable.get(prediction);
+            Collections.reverse(rhsOfRule);
+            for (Symbol symbol : rhsOfRule) {
+                PstNode newNode;
+                if (symbol instanceof Terminal) {
+                    newNode = new PstLeafNode(symbol, token);
+                } else {
+                    newNode = new PstInnerNode(symbol);
+                }
+                stack.push(newNode);
+                parentNode.addChild(newNode);
             }
         } else {
             throw new ParserException("ParseException");
