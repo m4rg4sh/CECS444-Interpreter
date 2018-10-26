@@ -1,6 +1,7 @@
 import Symbols.*;
-import Token.Token;
+import Tokens.Token;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,30 +35,37 @@ public class LLParseMachine {
     private void parse() throws ParserException{
         boolean parsing = true;
         while(parsing) {
-            Token token = tokenStream.getNextToken();
-            Symbol topOfStack = stack.pop();
-            if (token.getId() == topOfStack.getId()) {
-                if (token.getId() == Terminal.EOF.getId()) {
-                    parsing = false;
+            try {
+                Token token = tokenStream.getNextToken();
+                Symbol topOfStack = stack.peek();
+                if (token.getId() == topOfStack.getId()) {
+                    if (token.getId() == Terminal.EOF.getId()) {
+                        parsing = false;
+                    } else {
+                        stack.pop();
+                    }
+                } else if (topOfStack instanceof Terminal) {
+                    throw new ParserException("ParseException");
+                } else {
+                    executeRule(topOfStack, token);
                 }
-            } else if (topOfStack instanceof Terminal){
-                throw new ParserException("Parse Exception");
-            }  else {
-                executeMatchingRule(topOfStack, token);
+            } catch (IOException | TokenInputMalformedException e) {
+                throw new ParserException("Tokens Error");
             }
         }
     }
 
-    private void executeMatchingRule(Symbol topOfStack, Token token) throws ParserException {
+    private void executeRule(Symbol topOfStack, Token token) throws ParserException {
         Prediction prediction = new Prediction((NonTerminal) topOfStack, Terminal.valueOf(token.getId()));
         if (predictionTable.containsKey(prediction)) {
-            ArrayList<Symbol> rule = predictionTable.get(prediction);
-            Collections.reverse(rule);
-            for (Symbol s : rule) {
+            ArrayList<Symbol> cell = predictionTable.get(prediction);
+            stack.pop();
+            Collections.reverse(cell);
+            for (Symbol s : cell) {
                 stack.push(s);
             }
         } else {
-            throw new ParserException("Empty cell in ParseTable");
+            throw new ParserException("ParseException");
         }
     }
 }
