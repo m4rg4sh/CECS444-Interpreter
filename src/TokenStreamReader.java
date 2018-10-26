@@ -10,7 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class creates tokens using the output from our lexer.
+ * This class creates tokens using the output from our lexer. The user must stop reading tokens when encountering
+ * the EOF token or a IOError will be raised.
  */
 
 public class TokenStreamReader extends InputStreamReader {
@@ -19,46 +20,45 @@ public class TokenStreamReader extends InputStreamReader {
      */
     
     private static final Pattern statePattern =
-            Pattern.compile("Tok: *(\\d*) line= *(\\d*) str= \"(.*)\"(( int= *(\\d*))| float= *(\\d*.\\d*))?");
+            Pattern.compile("\\(Tok: *(\\d*) line= *(\\d*) str= \"(.*)\"(?:\\)|(?: int= *\\d*\\)| float= *\\d*.\\d*\\))?)");
     
     /**
      * This Matcher uses our Pattern to find the values. We initialize it with an empty string to reuse later.
      */
     
     private Matcher tokenMatcher = statePattern.matcher("");
-    /**
-     * This is the buffer for our peek function.
-     */
-    int buffer;
     
     /**
      * Default constructor
-     * @param in
+     * @param in The InputStream we are wrapping.
      */
     TokenStreamReader(InputStream in) {
         super(in);
     }
     
     /**
-     *
-     * @return
-     * @throws TokenInputMalformedException
-     * @throws IOException
+     * This function reads a line from stdin and creates a <code>Token</code>.
+     * @return Token the output token.
+     * @throws TokenInputMalformedException If the input doesn't match our <code>Pattern</code> this error is thrown.
+     * @throws IOException Unhandled exception thrown by <code>getNextLine</code>.
      */
     
     public Token getNextToken() throws TokenInputMalformedException, IOException {
-        StringBuilder nextToken = new StringBuilder();
-        
-        char nextChar = (char) read();
-        while(nextChar != '\n'){
-            nextToken.append(nextChar);
-            
-            int nextInt = read();
-            if (nextInt == -1) break;
-            else nextChar = (char) nextInt;
-        }
-        
-        String tokenString = nextToken.toString();
+        StringBuilder nextTokenStringBuilder = new StringBuilder();
+        getNextLine(nextTokenStringBuilder);
+        String tokenString = nextTokenStringBuilder.toString();
+        return createToken(tokenString);
+    }
+    
+    /**
+     * This function uses <code>tokenMatcher</code> to validate token input and get the value of the three capture
+     * groups. These values are passed onto <code>TokenFactory</code> to create the necessary Token.
+     * @param tokenString The string input
+     * @return Token
+     * @throws TokenInputMalformedException If <code>tokenMatcher</code> is unable to find a match this error is thrown.
+     */
+    
+    private Token createToken(String tokenString) throws TokenInputMalformedException {
         tokenMatcher.reset(tokenString);
         if (tokenMatcher.find()) {
             Terminal terminal = getTerminal(Integer.parseInt(tokenMatcher.group(1)));
@@ -76,5 +76,22 @@ public class TokenStreamReader extends InputStreamReader {
             throw new InputMismatchException("Unknown TokenID");
         }
         return terminal;
+    }
+
+    /**
+     * Reads until the end of line adding characters to the given <code>StringBuilder</code>. This code ignores the EOF character.
+     * @param nextTokenStringBuilder The StringBuilder used to aggregate char from the <code>InputStream</code>.
+     * @throws IOException Unhandled exception from <code>read</code>.
+     */
+    
+    private void getNextLine(StringBuilder nextTokenStringBuilder) throws IOException {
+        char nextChar = (char) read();
+        while(nextChar != '\n'){
+            nextTokenStringBuilder.append(nextChar);
+            
+            int nextInt = read();
+            if (nextInt == -1) break;
+            else nextChar = (char) nextInt;
+        }
     }
 }
