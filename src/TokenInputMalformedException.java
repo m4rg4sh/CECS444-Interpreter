@@ -1,2 +1,8 @@
-public class TokenInputMalformedException extends Exception {
+class TokenInputMalformedException extends Exception {
+    TokenInputMalformedException(String input){
+        super(input);
+    }
+    TokenInputMalformedException(){
+        super();
+    }
 }
