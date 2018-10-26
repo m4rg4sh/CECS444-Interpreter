@@ -1,3 +1,5 @@
+import Exceptions.ParserException;
+import Exceptions.TokenInputMalformedException;
 import Symbols.*;
 import Tokens.Token;
 
