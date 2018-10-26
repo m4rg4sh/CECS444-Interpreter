@@ -1,6 +1,4 @@
-import Symbols.NonTerminal;
-import Symbols.Symbol;
-import Symbols.Terminal;
+import Symbols.*;
 import Token.Token;
 
 import java.util.ArrayList;
@@ -37,28 +35,29 @@ public class LLParseMachine {
         boolean parsing = true;
         while(parsing) {
             Token token = tokenStream.getNextToken();
-            Symbol topOfStack = stack.peek();
+            Symbol topOfStack = stack.pop();
             if (token.getId() == topOfStack.getId()) {
                 if (token.getId() == Terminal.EOF.getId()) {
                     parsing = false;
-                } else {
-                    stack.pop();
                 }
             } else if (topOfStack instanceof Terminal){
-                throw new ParserException("ParseException");
+                throw new ParserException("Parse Exception");
             }  else {
-                Prediction prediction = new  Prediction((NonTerminal) topOfStack, Terminal.valueOf(token.getId()));
-                if (predictionTable.containsKey(prediction)) {
-                    ArrayList<Symbol> cell = predictionTable.get(prediction);
-                    stack.pop();
-                    Collections.reverse(cell);
-                    for (Symbol s : cell) {
-                        stack.push(s);
-                    }
-                } else {
-                    throw new ParserException("ParseException");
-                }
+                executeMatchingRule(topOfStack, token);
             }
+        }
+    }
+
+    private void executeMatchingRule(Symbol topOfStack, Token token) throws ParserException {
+        Prediction prediction = new Prediction((NonTerminal) topOfStack, Terminal.valueOf(token.getId()));
+        if (predictionTable.containsKey(prediction)) {
+            ArrayList<Symbol> rule = predictionTable.get(prediction);
+            Collections.reverse(rule);
+            for (Symbol s : rule) {
+                stack.push(s);
+            }
+        } else {
+            throw new ParserException("Empty cell in ParseTable");
         }
     }
 }

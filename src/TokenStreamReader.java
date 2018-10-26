@@ -8,7 +8,8 @@ public class TokenStreamReader extends InputStreamReader {
     TokenStreamReader(InputStream in) {
         super(in);
     }
-    
+
+    //TODO should directly advance the input after returning the token
     public Token getNextToken() throws InputMismatchException{
         State state = getState();
         int lineNumber = getLineNumber();
