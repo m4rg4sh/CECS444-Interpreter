@@ -1,7 +1,8 @@
 package Symbols;
 
 public enum NonTerminal implements Symbol {
-    Pgm(0);
+    Pgm(0),
+    Vargroup(1);
 
     private int id;
 

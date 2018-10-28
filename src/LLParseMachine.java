@@ -4,10 +4,7 @@ import Symbols.*;
 import Tokens.Token;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 
 
 /**
@@ -16,7 +13,7 @@ import java.util.Stack;
  */
 public class LLParseMachine {
     private static final Symbol START_SYMBOL = NonTerminal.Pgm;
-    private static final HashMap<Prediction, ArrayList<Symbol>> predictionTable = PredictionTableGenerator.createPredictionTable();
+    private static final Map<Prediction, ArrayList<Symbol>> predictionTable = PredictionTableGenerator.createPredictionTable();
     private Stack<PstNode> stack;
     private TokenStreamReader tokenStream;
     
