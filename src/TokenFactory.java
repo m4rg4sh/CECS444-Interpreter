@@ -13,66 +13,8 @@ public class TokenFactory {
                 return new IntToken(terminal.getId(), lineNumber, tokenValue, Integer.parseInt(tokenValue));
             case FLOAT:
                 return new FloatToken(terminal.getId(), lineNumber, tokenValue, (double) Float.parseFloat(tokenValue));
-            case ID:
-                return handleID(lineNumber, tokenValue);
-            case COMMENT:
-                //fallthrough
-            case OPARROW:
-                //fallthrough
-            case OPEQ:
-                //fallthrough
-            case OPGE:
-                //fallthrough
-            case OPLE:
-                //fallthrough
-            case OPNE:
-                //fallthrough
-            case OPSHL:
-                //fallthrough
-            case OPSHR:
-                //fallthrough
-            case DOT:
-                //fallthrough
-            case MINUS:
-                //fallthrough
-            case ASTER:
-                //fallthrough
-            case CARET:
-                //fallthrough
-            case COLON:
-                //fallthrough
-            case PLUS:
-                //fallthrough
-            case SLASH:
-                //fallthrough
-            case EQUAL:
-                //fallthrough
-            case ANGLE1:
-                //fallthrough
-            case ANGLE2:
-                //fallthrough
-            case BRACE1:
-                //fallthrough
-            case BRACE2:
-                //fallthrough
-            case PARENS1:
-                //fallthrough
-            case PARENS2:
-                //fallthrough
-            case BRACKET1:
-                //fallthrough
-            case BRACKET2:
-                //fallthrough
-            case COMMA:
-                //fallthrough
-            case SEMI:
-                //fallthrough
-            case EOF:
-                //fallthrough
-            case STRING:
-                return new Token(terminal.getId(), lineNumber, tokenValue);
             default:
-                return new Token(Terminal.ERROR.getId(), lineNumber, tokenValue);
+                return new Token(terminal.getId(), lineNumber, tokenValue);
         }
     }
 
