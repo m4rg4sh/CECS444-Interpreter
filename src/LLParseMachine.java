@@ -33,6 +33,7 @@ public class LLParseMachine {
 
     private void initializeStack() {
         stack = new Stack<>();
+        stack.push(new PstInnerNode(Terminal.EOF));
         stack.push(new PstInnerNode(START_SYMBOL));
     }
 
@@ -61,6 +62,9 @@ public class LLParseMachine {
                 throw new ParserException("Tokens Error");
             }
         }
+    
+        stack.push(new PstInnerNode(START_SYMBOL));
+        printParseTree(stack.pop());
     }
 
     private void executeRule(Symbol topOfStack, Token token, PstInnerNode parentNode) throws ParserException {
@@ -80,6 +84,13 @@ public class LLParseMachine {
             }
         } else {
             throw new ParserException("ParseException");
+        }
+    }
+    
+    private void printParseTree(PstNode root){
+        if (root != null){
+            System.out.println("(Node: ");
+            System.out.printf("\t(Type:%s; ID:%d)%n", root.getSymbol().getClass().getSimpleName(), 1);
         }
     }
 }

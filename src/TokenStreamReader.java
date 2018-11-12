@@ -20,7 +20,7 @@ public class TokenStreamReader extends InputStreamReader {
      */
     
     private static final Pattern statePattern =
-            Pattern.compile("\\(Tok: *(\\d*) line= *(\\d*) str= \"(.*)\"(?:\\)|(?: int= *\\d*\\)| float= *\\d*.\\d*\\))?)");
+            Pattern.compile("\\(Tok: *(\\d*) line= *(\\d*) str= \"(.*)\"(?:\\)|(?: int= *\\d*\\)| float= *\\d*\\.\\d*\\))?)");
     
     /**
      * This Matcher uses our Pattern to find the values. We initialize it with an empty string to reuse later.
@@ -89,9 +89,11 @@ public class TokenStreamReader extends InputStreamReader {
         while(nextChar != '\n'){
             nextTokenStringBuilder.append(nextChar);
             
-            int nextInt = read();
-            if (nextInt == -1) break;
-            else nextChar = (char) nextInt;
+//            int nextInt = read();
+//            if (nextInt == -1) break;
+//            else nextChar = (char) nextInt;
+            nextChar = (char) read();
+            if(nextChar == '~') break;
         }
     }
 }
