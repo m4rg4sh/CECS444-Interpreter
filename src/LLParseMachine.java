@@ -1,7 +1,9 @@
 import Exceptions.*;
-import PST.*;
+import Tree.AST.AstNode;
+import Tree.PST.*;
 import Symbols.*;
 import Tokens.Token;
+import Tree.TreeNode;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,10 +14,11 @@ import java.util.*;
  * table, prediction stack, and token stream.
  */
 public class LLParseMachine {
-    private static final Symbol START_SYMBOL = NonTerminal.Pgm;
-    private static final Map<Prediction, ArrayList<Symbol>> predictionTable = PredictionTableGenerator.createPredictionTable();
+    private static final Symbol START_SYMBOL = NonTerminal.PGM;
+    private static final Map<Prediction, Rule> predictionTable = PredictionTableGenerator.createPredictionTable();
     private Stack<PstNode> stack;
     private TokenStreamReader tokenStream;
+    private PstNode pstRoot;
     
     public static void main(String[] args){
         try {
@@ -33,8 +36,9 @@ public class LLParseMachine {
 
     private void initializeStack() {
         stack = new Stack<>();
-        stack.push(new PstInnerNode(Terminal.EOF));
-        stack.push(new PstInnerNode(START_SYMBOL));
+        stack.push(new PstInnerNode(Terminal.EOF, 99)); // TODO make ruleID an Optional<int> or try to import Rule from default package
+        stack.push(new PstInnerNode(START_SYMBOL, 99)); // TODO make ruleID an Optional<int> or try to import Rule from default package
+        pstRoot = stack.peek();
     }
 
     private void parse() throws ParserException{
@@ -63,21 +67,21 @@ public class LLParseMachine {
             }
         }
     
-        stack.push(new PstInnerNode(START_SYMBOL));
-        printParseTree(stack.pop());
+        serializeTree(pstRoot);
     }
 
     private void executeRule(Symbol topOfStack, Token token, PstInnerNode parentNode) throws ParserException {
         Prediction prediction = new Prediction((NonTerminal) topOfStack, Terminal.valueOf(token.getId()));
         if (predictionTable.containsKey(prediction)) {
-            ArrayList<Symbol> rhsOfRule = predictionTable.get(prediction);
-            Collections.reverse(rhsOfRule);
-            for (Symbol symbol : rhsOfRule) {
+            Rule rule = predictionTable.get(prediction);
+            List<Symbol> rhs = rule.getRhs();
+            Collections.reverse(rhs);
+            for (Symbol symbol : rhs) {
                 PstNode newNode;
                 if (symbol instanceof Terminal) {
                     newNode = new PstLeafNode(symbol, token);
                 } else {
-                    newNode = new PstInnerNode(symbol);
+                    newNode = new PstInnerNode(symbol, rule.getId());
                 }
                 stack.push(newNode);
                 parentNode.addChild(newNode);
@@ -87,10 +91,20 @@ public class LLParseMachine {
         }
     }
     
-    private void printParseTree(PstNode root){
-        if (root != null){
-            System.out.println("(Node: ");
-            System.out.printf("\t(Type:%s; ID:%d)%n", root.getSymbol().getClass().getSimpleName(), 1);
+    private void serializeTree(TreeNode node){
+        System.out.printf("\n(Node: ");
+        printLocalFieldInfo(node);
+        if (node instanceof PstInnerNode) {
+            for (PstNode child : ((PstInnerNode) node).getChildren()) {
+                serializeTree(child);
+            }
         }
+        System.out.printf(")");
+    }
+
+    private void printLocalFieldInfo(TreeNode node) {
+        System.out.printf("\t(Type:%s; ID:%d)", node.getSymbol().getClass().getSimpleName(), node.hashCode()); //TODO implement hascode in a useful way
+        //TODO print the rest of the stuff, I don't get what he wants here
+
     }
 }
