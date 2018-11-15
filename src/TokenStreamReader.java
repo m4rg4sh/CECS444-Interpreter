@@ -29,6 +29,11 @@ public class TokenStreamReader extends InputStreamReader {
     private Matcher tokenMatcher = statePattern.matcher("");
     
     /**
+     * This Token is a buffer to store the result of peek.
+     */
+    private Token tokenBuffer;
+    
+    /**
      * Default constructor
      * @param in The InputStream we are wrapping.
      */
@@ -44,10 +49,21 @@ public class TokenStreamReader extends InputStreamReader {
      */
     
     public Token getNextToken() throws TokenInputMalformedException, IOException {
-        StringBuilder nextTokenStringBuilder = new StringBuilder();
-        getNextLine(nextTokenStringBuilder);
-        String tokenString = nextTokenStringBuilder.toString();
-        return createToken(tokenString);
+        if(tokenBuffer == null) {
+            StringBuilder nextTokenStringBuilder = new StringBuilder();
+            getNextLine(nextTokenStringBuilder);
+            String tokenString = nextTokenStringBuilder.toString();
+            return createToken(tokenString);
+        }
+        else{
+            Token result = tokenBuffer;
+            tokenBuffer = null;
+            return result;
+        }
+    }
+    public Token peek() throws TokenInputMalformedException, IOException {
+        tokenBuffer = getNextToken();
+        return tokenBuffer;
     }
     
     /**

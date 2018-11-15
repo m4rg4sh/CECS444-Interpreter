@@ -64,7 +64,19 @@ public enum NonTerminal implements Symbol {
     LTHAN(60),
     GTHAN(61),
     OPADD(62),
-    OPMUL(63);
+    OPMUL(63),
+    VARITEMT(64),
+    VARID(65),
+    VARSPECT(66),
+    BBEXPRST(67),
+    CLASSDECLT(68),
+    PPARMLISTT(69),
+    FACTT(70),
+    FACTCHECK(71),
+    STMTT(72),
+    LVALT(73),
+    PPEXPRST(74),
+    STRTNT(75);
 
     private int id;
 

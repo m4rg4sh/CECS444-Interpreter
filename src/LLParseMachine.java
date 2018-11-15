@@ -12,7 +12,7 @@ import java.util.*;
  * table, prediction stack, and token stream.
  */
 public class LLParseMachine {
-    private static final Symbol START_SYMBOL = NonTerminal.Pgm;
+    private static final Symbol START_SYMBOL = NonTerminal.PGM;
     private static final Map<Prediction, ArrayList<Symbol>> predictionTable = PredictionTableGenerator.createPredictionTable();
     private Stack<PstNode> stack;
     private TokenStreamReader tokenStream;
@@ -41,14 +41,14 @@ public class LLParseMachine {
         boolean parsing = true;
         while(parsing) {
             try {
-                Token token = tokenStream.getNextToken();
+                Token token = tokenStream.peek();
                 PstNode pstPointer = stack.pop();
                 Symbol topOfStack = pstPointer.getSymbol();
                 if (token.getId() == topOfStack.getId()) {
                     if (token.getId() == Terminal.EOF.getId()) {
                         parsing = false;
                     }
-                    //pop & advance already done
+                    tokenStream.getNextToken(); //Advances the input. Stack already popped.
                 } else if (topOfStack instanceof Terminal) {
                     throw new ParserException("ParseException");
                 } else {
@@ -62,9 +62,6 @@ public class LLParseMachine {
                 throw new ParserException("Tokens Error");
             }
         }
-    
-        stack.push(new PstInnerNode(START_SYMBOL));
-        printParseTree(stack.pop());
     }
 
     private void executeRule(Symbol topOfStack, Token token, PstInnerNode parentNode) throws ParserException {
@@ -87,10 +84,17 @@ public class LLParseMachine {
         }
     }
     
-    private void printParseTree(PstNode root){
-        if (root != null){
-            System.out.println("(Node: ");
-            System.out.printf("\t(Type:%s; ID:%d)%n", root.getSymbol().getClass().getSimpleName(), 1);
+    private void printParseTree(PstNode node, int level){
+        if (node == null) return;
+        
+        System.out.println("(Node: ");
+        System.out.printf("\t(Type:%s; ID:%d)%n", node.getSymbol().getClass().getSimpleName(), 1);
+        if (node instanceof  PstInnerNode){
+            for (PstNode child : ((PstInnerNode) node).getChildren()){
+                printParseTree(child, level + 1);
+            }
         }
+        System.out.println(")");
+    
     }
 }

@@ -1,7 +1,6 @@
 package Symbols;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public enum Terminal implements Symbol {
     COMMENT(1),
@@ -51,7 +50,9 @@ public enum Terminal implements Symbol {
     OPSHL(56),
     OPSHR(57),
     EOF(0),
-    ERROR(99);
+    ERROR(99),
+    EPSILON(100),
+    AMPERSAND(101);
 
     private final int id;
 
