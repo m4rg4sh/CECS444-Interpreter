@@ -8,18 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PredictionTableGenerator {
-    private static HashMap<Prediction, ArrayList<Symbol>> predictionTable;
+    private static HashMap<Prediction, Rule> parseTable;
 
     private PredictionTableGenerator() {
         //hides default constructor
     }
 
-    public static Map<Prediction, ArrayList<Symbol>> createPredictionTable(){
-        if (predictionTable == null){
-            fillPredictionTable();
+    //TODO Finish prediction table
+    public static Map<Prediction, Rule> createPredictionTable(){
+        if (parseTable == null){
+            fillParseTable();
         }
         
-        return predictionTable;
+        return parseTable;
     }
     private static void fillRule(ArrayList<Symbol> rhs, Symbol... args){
         Collections.addAll(rhs, args);
@@ -168,7 +169,7 @@ public class PredictionTableGenerator {
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.DEREF, Terminal.ID);
         predictionTable.put(new Prediction(NonTerminal.DEREF_ID,Terminal.ASTER),rhs);
-            
+        
         //Deref = aster
         rhs = new ArrayList<>();
         fillRule(rhs, Terminal.ASTER);
@@ -191,7 +192,7 @@ public class PredictionTableGenerator {
         rhs = new ArrayList<>();
         fillRule(rhs, Terminal.BRACE1, NonTerminal.BBEXPRST);
         predictionTable.put(new Prediction(NonTerminal.BBEXPRS, Terminal.BRACE1), rhs);
-            
+        
         //BBexprsT = Exprlist brace2
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.EXPRLIST, Terminal.BRACE2);
@@ -284,7 +285,7 @@ public class PredictionTableGenerator {
         rhs = new ArrayList<>();
         fillRule(rhs, Terminal.COLON, Terminal.ID);
         predictionTable.put(new Prediction(NonTerminal.CLASS_CTRL,Terminal.COLON),rhs);
-            
+        
         //Interfaces = colon Classid Interfaces
         rhs = new ArrayList<>();
         fillRule(rhs, Terminal.COLON, NonTerminal.CLASSID, NonTerminal.INTERFACES);

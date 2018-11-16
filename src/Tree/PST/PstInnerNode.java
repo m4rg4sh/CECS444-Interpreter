@@ -1,4 +1,4 @@
-package PST;
+package Tree.PST;
 
 import Symbols.Symbol;
 
@@ -7,9 +7,11 @@ import java.util.List;
 
 public class PstInnerNode extends PstNode {
     private ArrayList<PstNode> children;
+    private int rule;
 
-    public PstInnerNode(Symbol symbol) {
+    public PstInnerNode(Symbol symbol, int ruleID) {
         super(symbol);
+        this.rule = ruleID;
         children = new ArrayList<>();
     }
 
@@ -17,6 +19,9 @@ public class PstInnerNode extends PstNode {
         children.add(child);
     }
 
+    public int getRuleId() {
+        return rule;
+    }
     public List<PstNode> getChildren() {
         return children;
     }

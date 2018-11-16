@@ -1,8 +1,9 @@
-package PST;
+package Tree.PST;
 
 import Symbols.Symbol;
+import Tree.TreeNode;
 
-public abstract class PstNode {
+public abstract class PstNode implements TreeNode {
     private Symbol symbol;
 
     //TODO store the rule that was used
