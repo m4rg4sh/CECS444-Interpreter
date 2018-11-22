@@ -1,5 +1,4 @@
 import Exceptions.*;
-import Tree.AST.AstNode;
 import Tree.PST.*;
 import Symbols.*;
 import Tokens.Token;
@@ -15,7 +14,7 @@ import java.util.*;
  */
 public class LLParseMachine {
     private static final Symbol START_SYMBOL = NonTerminal.PGM;
-    private static final Map<Prediction, Rule> predictionTable = PredictionTableGenerator.createPredictionTable();
+    private static  ParseTable parseTable;
     private Stack<PstNode> stack;
     private TokenStreamReader tokenStream;
     private PstNode pstRoot;
@@ -36,25 +35,28 @@ public class LLParseMachine {
 
     private void initializeStack() {
         stack = new Stack<>();
-        stack.push(new PstInnerNode(Terminal.EOF, 99)); // TODO make ruleID an Optional<int> or try to import Rule from default package
-        stack.push(new PstInnerNode(START_SYMBOL, 99)); // TODO make ruleID an Optional<int> or try to import Rule from default package
+        stack.push(new PstInnerNode(Terminal.EOF, 0));
+        stack.push(new PstInnerNode(START_SYMBOL, 1));
+        
         pstRoot = stack.peek();
     }
 
     private void parse() throws ParserException{
+        parseTable = PredictionTableGenerator.createParseTable();
         boolean parsing = true;
         while(parsing) {
             try {
                 Token token = tokenStream.peek();
                 PstNode pstPointer = stack.pop();
                 Symbol topOfStack = pstPointer.getSymbol();
-                if (token.getId() == topOfStack.getId()) {
+                if (topOfStack instanceof Terminal && token.getId() == topOfStack.getId()) {
                     if (token.getId() == Terminal.EOF.getId()) {
                         parsing = false;
                     }
                     tokenStream.getNextToken(); //Advances the input. Stack already popped.
                 } else if (topOfStack instanceof Terminal) {
-                    throw new ParserException("ParseException");
+                    throw new ParserException("ParseException: Top of stack is Terminal. Token :" + token + ", Symbol :"
+                     + topOfStack);
                 } else {
                     if (pstPointer instanceof PstInnerNode) {
                         executeRule(topOfStack, token, (PstInnerNode) pstPointer);
@@ -72,9 +74,9 @@ public class LLParseMachine {
 
     private void executeRule(Symbol topOfStack, Token token, PstInnerNode parentNode) throws ParserException {
         Prediction prediction = new Prediction((NonTerminal) topOfStack, Terminal.valueOf(token.getId()));
-        if (predictionTable.containsKey(prediction)) {
-            Rule rule = predictionTable.get(prediction);
-            List<Symbol> rhs = rule.getRhs();
+        if (parseTable.containsKey(prediction)) {
+            Rule rule = (Rule) parseTable.get(prediction);
+            List<Symbol> rhs = new ArrayList<>(rule.getRhs());
             Collections.reverse(rhs);
             for (Symbol symbol : rhs) {
                 PstNode newNode;
@@ -87,19 +89,20 @@ public class LLParseMachine {
                 parentNode.addChild(newNode);
             }
         } else {
-            throw new ParserException("ParseException");
+            throw new ParserException("ParseException: Prediction not in table. Token:" + token +", Symbol:" +
+            topOfStack);
         }
     }
     
     private void serializeTree(TreeNode node){
-        System.out.printf("\n(Node: ");
+        System.out.printf("%n(Node: ");
         printLocalFieldInfo(node);
         if (node instanceof PstInnerNode) {
             for (PstNode child : ((PstInnerNode) node).getChildren()) {
                 serializeTree(child);
             }
         }
-        System.out.printf(")");
+        System.out.println(")");
     }
 
     private void printLocalFieldInfo(TreeNode node) {

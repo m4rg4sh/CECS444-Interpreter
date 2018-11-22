@@ -20,4 +20,12 @@ public class PstLeafNode extends PstNode {
     public Token getToken() {
         return token;
     }
+    
+    @Override
+    public String toString() {
+        return "PstLeafNode{" +
+                "symbol = " + getSymbol() +
+                ", token=" + token +
+                '}';
+    }
 }

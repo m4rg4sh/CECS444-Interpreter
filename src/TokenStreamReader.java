@@ -105,11 +105,9 @@ public class TokenStreamReader extends InputStreamReader {
         while(nextChar != '\n'){
             nextTokenStringBuilder.append(nextChar);
             
-//            int nextInt = read();
-//            if (nextInt == -1) break;
-//            else nextChar = (char) nextInt;
-            nextChar = (char) read();
-            if(nextChar == '~') break;
+            int nextInt = read();
+            if (nextInt == -1) break;
+            else nextChar = (char) nextInt;
         }
     }
 }

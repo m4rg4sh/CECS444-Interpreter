@@ -3,29 +3,30 @@ import Symbols.Symbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
-public class PredictionTable extends HashMap{
-    private HashMap<Prediction, Rule> predictionTable;
-    private int ruleNumber = 0;
-    public PredictionTable (){
-        predictionTable = new HashMap<>();
+public class ParseTable{
+    private Map<Prediction, Rule> parseTableMap;
+    ParseTable(){
+        parseTableMap = new HashMap<>();
     }
     
-    @Override
-    public Object put(Object key, Object value) {
-        Prediction prediction = (Prediction) key;
-        ArrayList<Symbol> rhs = (ArrayList<Symbol>) value;
+    public void put(Prediction prediction, ArrayList<Symbol> rhs, int ruleNumber) {
         Rule rule = new Rule(ruleNumber, prediction, rhs);
-        return predictionTable.put(prediction, rule);
+        parseTableMap.put(prediction, rule);
     }
     
-    @Override
-    public boolean containsKey(Object key) {
-        return predictionTable.containsKey(key);
+    public boolean containsKey(Prediction key) {
+        return parseTableMap.containsKey(key);
     }
     
-    @Override
     public Object get(Object key) {
-        return predictionTable.get(key);
+        return parseTableMap.get(key);
+    }
+    
+    @Override
+    public String toString() {
+        return parseTableMap.toString();
     }
 }
