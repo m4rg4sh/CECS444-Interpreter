@@ -1,9 +1,7 @@
 import Exceptions.*;
-import Tree.PST.*;
+import PST.*;
 import Symbols.*;
 import Tokens.Token;
-import Tree.TreeNode;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -18,7 +16,7 @@ public class LLParseMachine {
     private Stack<PstNode> stack;
     private TokenStreamReader tokenStream;
     private PstNode pstRoot;
-    
+
     public static void main(String[] args){
         try {
             new LLParseMachine().parse();
@@ -68,8 +66,9 @@ public class LLParseMachine {
                 throw new ParserException("Tokens Error");
             }
         }
-    
         serializeTree(pstRoot);
+        pst2ast(pstRoot);
+
     }
 
     private void executeRule(Symbol topOfStack, Token token, PstInnerNode parentNode) throws ParserException {
@@ -94,7 +93,7 @@ public class LLParseMachine {
         }
     }
     
-    private void serializeTree(TreeNode node){
+    private void serializeTree(PstNode node){
         System.out.printf("%n(Node: ");
         printLocalFieldInfo(node);
         if (node instanceof PstInnerNode) {
@@ -105,9 +104,33 @@ public class LLParseMachine {
         System.out.println(")");
     }
 
-    private void printLocalFieldInfo(TreeNode node) {
+    private void printLocalFieldInfo(PstNode node) {
         System.out.printf("\t(Type:%s; ID:%d)", node.getSymbol().getClass().getSimpleName(), node.hashCode()); //TODO implement hascode in a useful way
         //TODO print the rest of the stuff, I don't get what he wants here
+
+    }
+
+    private void pst2ast (PstNode node) {
+        if (node instanceof PstInnerNode) {
+            for (PstNode kid : ((PstInnerNode) node).getChildren()) {
+                pst2ast(kid);
+            }
+            convertNode((PstInnerNode) node);
+        }
+        //no else needed, leaf nodes get converted while the parent node is handled
+    }
+
+    private void convertNode(PstInnerNode node) {
+        switch (node.getRuleId()) {
+            case 1:
+                P2aRules.rule1(node);
+                break;
+            case 2:
+                P2aRules.rule2(node);
+                break;
+            default:
+                P2aRules.rule1(node);
+        }
 
     }
 }

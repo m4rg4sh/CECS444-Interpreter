@@ -1,4 +1,4 @@
-package Tree.PST;
+package PST;
 
 import Symbols.Symbol;
 import Tokens.Token;
