@@ -318,6 +318,9 @@ public class P2aRules {
     // Md_id = Classid colon Fcnid
     public static void rule53(PstInnerNode node) {
         hoistKid(1, node); // Is this right?
+        //i feel it should be hoistKid(0, node);
+        //with post order this rule should become
+        // Md_id = id colon id
     }
 
     // Fcndefs = Fcndef Fcndefs
@@ -367,12 +370,13 @@ public class P2aRules {
 
     // Varspecs = Varspec More_varspecs
     public static void rule63(PstInnerNode node) {
+        removeEpsilonKids(node);
         hoistKid(0, node);
     }
 
     // More_varspecs = comma Varspecs
     public static void rule64(PstInnerNode node) {
-        removeEpsilonKids(node);
+        //removeEpsilonKids(node); not needed? since varspecs always =  id or aster at least
         hoistKid(0, node);
     }
 
@@ -390,6 +394,9 @@ public class P2aRules {
     public static void rule67(PstInnerNode node) {
         removeEpsilonKids(node);
         hoistKid(1, node);
+        //i feel it should be hoistKid(0, node);
+        //with post order this rule should become
+        // stmts = terminal semi
     }
 
     // Stmts = eps
@@ -431,6 +438,9 @@ public class P2aRules {
     public static void rule75(PstInnerNode node) {
         removeEpsilonKids(node);
         hoistKid(1, node);
+        //i feel it should be hoistKid(0, node);
+        //with post order this rule should become
+        // stmt = aster id equal
     }
 
     // Stmt = id StmtT
@@ -446,7 +456,7 @@ public class P2aRules {
 
     // StmtT = PPexprs
     public static void rule78(PstInnerNode node) {
-        removeEpsilonKids(node);
+        //removeEpsilonKids(node); not needed? ppexpers always = parens1...
         hoistKid(0, node);
     }
 
@@ -454,6 +464,13 @@ public class P2aRules {
     public static void rule79(PstInnerNode node) {
         removeEpsilonKids(node);
         hoistKid(1, node);
+        //i feel it should be hoistKid(0, node);
+        //with post order this rule should become
+        //stasgn = terminal equal...
+
+        //but ruled not used anyway so
+
+        // --- CROSSED OUT ---
     }
 
     // Lval = id LvalT
@@ -495,6 +512,7 @@ public class P2aRules {
 
     // PPexprsT = Exprlist parens2
     public static void rule87(PstInnerNode node) {
+        removeEpsilonKids(node); // exprlist can be eps by association
         hoistKid(0, node);
     }
 
@@ -537,96 +555,126 @@ public class P2aRules {
 
     // Strtn = kwdreturn StrtnT
     public static void rule95(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0,node);
     }
 
     // StrtnT = Expr
     public static void rule96(PstInnerNode node) {
-
+        removeEpsilonKids(node);// eps by association
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // StrtnT = eps
     public static void rule97(PstInnerNode node) {
-
+        node.setEpsilon(true);
     }
 
     // PPexpr = parens1 Expr parens2
     public static void rule98(PstInnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
 
     }
 
     // Expr = Oprel Rterm Expr
     public static void rule99(PstInnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
 
     }
 
     // Expr = Rterm Expr
     public static void rule100(PstInnerNode node) {
-
+        removeEpsilonKids(node);// eps by association
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // Expr = eps
     public static void rule101(PstInnerNode node) {
-
+        node.setEpsilon(true);
     }
 
     // Rterm = Opadd Term Rterm
     public static void rule102(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0,node);
     }
 
     // Rterm = Term Rterm
     public static void rule103(PstInnerNode node) {
-
+        removeEpsilonKids(node);// eps by association
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // Rterm = eps
     public static void rule104(PstInnerNode node) {
-
+        node.setEpsilon(true);
     }
 
     // Term = Opmul Factcheck Term
     public static void rule105(PstInnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
 
     }
 
     // Term = Fact Term
     public static void rule106(PstInnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
 
     }
 
     // Term = eps
     public static void rule107(PstInnerNode node) {
-
+        node.setEpsilon(true);
     }
 
     // Factcheck = Fact
     public static void rule108(PstInnerNode node) {
-
+        hoistKid(0,node);
     }
 
     // Factcheck = Deref_id
     public static void rule109(PstInnerNode node) {
-
+        hoistKid(0,node);
     }
 
     // Fact = Basekind
     public static void rule110(PstInnerNode node) {
-
+        hoistKid(0,node);
     }
 
     // Fact = Addrof_id
     public static void rule111(PstInnerNode node) {
-
+        hoistKid(0,node);
     }
 
     // Fact = PPexpr
     public static void rule112(PstInnerNode node) {
-
+        hoistKid(0,node);
     }
 
     // Fact = id FactT
     public static void rule113(PstInnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
 
     }
 
