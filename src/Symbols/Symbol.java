@@ -5,5 +5,4 @@ package Symbols;
  */
 public interface Symbol {
     int getId();
-    //TODO Finish rule representation. Possibly enum?
 }

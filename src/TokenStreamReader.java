@@ -1,9 +1,11 @@
-import Token.Token;
+import Exceptions.TokenInputMalformedException;
+import Symbols.Terminal;
+import Tokens.Token;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Optional;
+import java.util.InputMismatchException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,16 +19,19 @@ public class TokenStreamReader extends InputStreamReader {
      * This regex Pattern will match our token output and groups the values.
      */
     
-//    private static final Pattern statePattern =
-//          Pattern.compile("Tok: *(\\d*) line= *(\\d*) str= \"(.*)\"(( int= *(\\d*))| float= *(\\d*.\\d*))?");
     private static final Pattern statePattern =
-            Pattern.compile("\\(Tok: *(\\d*) line= *(\\d*) str= \"(.*)\"(?:\\)|(?: int= *\\d*\\)| float= *\\d*.\\d*\\))?)");
+            Pattern.compile("\\(Tok: *(\\d*) line= *(\\d*) str= \"(.*)\"(?:\\)|(?: int= *\\d*\\)| float= *\\d*\\.\\d*\\))?)");
     
     /**
      * This Matcher uses our Pattern to find the values. We initialize it with an empty string to reuse later.
      */
     
     private Matcher tokenMatcher = statePattern.matcher("");
+    
+    /**
+     * This Token is a buffer to store the result of peek.
+     */
+    private Token tokenBuffer;
     
     /**
      * Default constructor
@@ -44,10 +49,21 @@ public class TokenStreamReader extends InputStreamReader {
      */
     
     public Token getNextToken() throws TokenInputMalformedException, IOException {
-        StringBuilder nextTokenStringBuilder = new StringBuilder();
-        getNextLine(nextTokenStringBuilder);
-        String tokenString = nextTokenStringBuilder.toString();
-        return createToken(tokenString);
+        if(tokenBuffer == null) {
+            StringBuilder nextTokenStringBuilder = new StringBuilder();
+            getNextLine(nextTokenStringBuilder);
+            String tokenString = nextTokenStringBuilder.toString();
+            return createToken(tokenString);
+        }
+        else{
+            Token result = tokenBuffer;
+            tokenBuffer = null;
+            return result;
+        }
+    }
+    public Token peek() throws TokenInputMalformedException, IOException {
+        tokenBuffer = getNextToken();
+        return tokenBuffer;
     }
     
     /**
@@ -61,15 +77,23 @@ public class TokenStreamReader extends InputStreamReader {
     private Token createToken(String tokenString) throws TokenInputMalformedException {
         tokenMatcher.reset(tokenString);
         if (tokenMatcher.find()) {
-            State state = getState(Integer.parseInt(tokenMatcher.group(1)));
+            Terminal terminal = getTerminal(Integer.parseInt(tokenMatcher.group(1)));
             int lineNumber = Integer.parseInt(tokenMatcher.group(2));
             String tokenValue = tokenMatcher.group(3);
-            return TokenFactory.createToken(state, lineNumber, tokenValue);
+            return TokenFactory.createToken(terminal, lineNumber, tokenValue);
         } else {
             throw new TokenInputMalformedException();
         }
     }
     
+    private Terminal getTerminal(int terminalId) {
+        Terminal terminal = Terminal.valueOf(terminalId);
+        if (terminal.getId() != terminalId) {
+            throw new InputMismatchException("Unknown TokenID");
+        }
+        return terminal;
+    }
+
     /**
      * Reads until the end of line adding characters to the given <code>StringBuilder</code>. This code ignores the EOF character.
      * @param nextTokenStringBuilder The StringBuilder used to aggregate char from the <code>InputStream</code>.
@@ -85,48 +109,5 @@ public class TokenStreamReader extends InputStreamReader {
             if (nextInt == -1) break;
             else nextChar = (char) nextInt;
         }
-    }
-    
-    /**
-     * This code returns a <code>State</code> corresponding to a given <code>int</code>. Throws a
-     * <code>TokenInputMalformedException</code> if no corresponding state exists. This function changes the
-     * <code>State</code> to <code>State.ID</code> if the given <code>int</code> corresponds to a keyword
-     * <code>State</code>. This is due to our <code>Lexer</code> treating keywords as ids when calling
-     * <code>TokenFactory.createToken</code>. <code></code>
-     * @param stateValue The integer with which to search State
-     * @return State the corresponding enum.
-     * @throws TokenInputMalformedException Thrown if int value is not in State enum.
-     */
-    private State getState(int stateValue) throws TokenInputMalformedException {
-        State state;
-        Optional<State> potentialState = State.valueOf(stateValue);
-        if (potentialState.isPresent()) {
-            state = potentialState.get();
-        }
-        else {
-            throw new TokenInputMalformedException("Invalid State.");
-        }
-        switch (state){
-            case KPROG:
-            case KMAIN:
-            case KFCN:
-            case KCLASS:
-            case KFLOAT:
-            case KINT:
-            case KSTRING:
-            case KIF:
-            case KELSEIF:
-            case KELSE:
-            case KWHILE:
-            case KINPUT:
-            case KPRINT:
-            case KNEW:
-            case KRETURN:
-            case KVAR:
-                return State.ID;
-            default:
-                break;
-        }
-        return state;
     }
 }
