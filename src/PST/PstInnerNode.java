@@ -2,19 +2,30 @@ package PST;
 
 import Symbols.Symbol;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PstInnerNode extends PstNode {
     private ArrayList<PstNode> children;
     private int rule;
+    private boolean isEpsilon;
 
     public PstInnerNode(Symbol symbol, int ruleID) {
         super(symbol);
         this.rule = ruleID;
         children = new ArrayList<>();
+        isEpsilon = false;
     }
 
     public PstInnerNode(Symbol symbol) {
         this(symbol, 0);
+    }
+
+    public void setEpsilon(boolean epsilon) {
+        isEpsilon = epsilon;
+    }
+
+    public boolean isEpsilon() {
+        return isEpsilon;
     }
 
     public void addChild(PstNode child) {
@@ -41,15 +52,19 @@ public class PstInnerNode extends PstNode {
         rule = id;
     }
 
+
     public int getRuleId() {
         return rule;
     }
-    public ArrayList<PstNode> getChildren() {
+    public List<PstNode> getChildren() {
         return children;
     }
 
     public void copyFrom(PstNode sourceNode) {
         setSymbol(sourceNode.getSymbol());
+        if (sourceNode.getToken() != null) {
+            setToken(sourceNode.getToken());
+        }
         //TODO potentially copy other stuff that isn't implemented yet
     }
 
