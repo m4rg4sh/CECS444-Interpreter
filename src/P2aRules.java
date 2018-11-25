@@ -26,7 +26,7 @@ public class P2aRules {
 
     // Vargroup = kwdvars PPvarlist
     public static void rule4(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Vargroup = eps
@@ -36,12 +36,15 @@ public class P2aRules {
 
     // PPvarlist = parens1 Varlist parens2
     public static void rule6(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        //node.removeChild(node.getChildCount()-1); //remove parens2 which is always the last child ???
+        hoistKid(0, node);
     }
 
     // Varlist = Varitem semi Varlist
     public static void rule7(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Varlist = eps
@@ -51,17 +54,19 @@ public class P2aRules {
 
     // Varitem = Vardecl VaritemT
     public static void rule9(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Varitem = Classdecl
     public static void rule10(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // VaritemT = equal Varinit
     public static void rule11(PstInnerNode node) {
-
+        removeEpsilonKids(node); //Varinit can be eps by association refer to rule 28
+        hoistKid(0, node);
     }
 
     // VaritemT = eps
@@ -71,52 +76,53 @@ public class P2aRules {
 
     // Vardecl = Simplekind Varspec
     public static void rule13(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Simplekind = Basekind
     public static void rule14(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Simplekind = Classid
     public static void rule15(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Basekind = int
     public static void rule16(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Basekind = float
     public static void rule17(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Basekind = string
     public static void rule18(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Classid = id
     public static void rule19(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Varspec = Varid VarspecT
     public static void rule20(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Varspec = Deref_id
     public static void rule21(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // VarspecT = KKint
     public static void rule22(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // VarspecT = eps
@@ -126,57 +132,74 @@ public class P2aRules {
 
     // Varid = id
     public static void rule24(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // KKint = bracket1 int bracket2
     public static void rule25(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Deref_id = Deref id
     public static void rule26(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Deref = aster
     public static void rule27(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
+    /**
+     * Check my logic
+     */
     // Varinit = Expr
     public static void rule28(PstInnerNode node) {
-
+        removeEpsilonKids(node); // expr can be eps
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // Varinit = BBexprs
     public static void rule29(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // BBexprs = brace1 BBexprsT
     public static void rule30(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // BBexprsT = Exprlist brace2
     public static void rule31(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // BBexprsT = brace2
     public static void rule32(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Exprlist = Expr Moreexprs
     public static void rule33(PstInnerNode node) {
-
+        removeEpsilonKids(node); // both can be eps
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // Moreexprs = comma Exprlist
     public static void rule34(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Moreexprs = eps
@@ -186,7 +209,8 @@ public class P2aRules {
 
     // Classdecl = kwdclass Classid ClassdeclT
     public static void rule36(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // ClassdeclT = eps
@@ -196,17 +220,19 @@ public class P2aRules {
 
     // ClassdeclT = Classmom Interfaces BBclassitems
     public static void rule38(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // BBClassitems = brace1 Classitems brace2
     public static void rule39(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Classmom = colon Classid
     public static void rule40(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Classmom = eps
@@ -216,7 +242,13 @@ public class P2aRules {
 
     // Classitems = Classgroup Classitems
     public static void rule42(PstInnerNode node) {
-
+        removeEpsilonKids(node); // both can be eps
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // Classitems = eps
@@ -226,27 +258,40 @@ public class P2aRules {
 
     // Classgroup = Class_ctrl
     public static void rule44(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Classgroup = Varlist
     public static void rule45(PstInnerNode node) {
-
+        removeEpsilonKids(node);// eps by association
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // Classgroup = Mddecls
     public static void rule46(PstInnerNode node) {
-
+        removeEpsilonKids(node);//eps by association
+        if (node.getChildCount()==0){
+            node.setEpsilon(true);
+        }
+        else{
+            hoistKid(0, node);
+        }
     }
 
     // Class_ctrl = colon id // in {public, protected, private}
     public static void rule47(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Interfaces = colon Classid Interfaces
     public static void rule48(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Interfaces = eps
