@@ -2,15 +2,22 @@ package PST;
 
 import Symbols.Symbol;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PstInnerNode extends PstNode {
     private ArrayList<PstNode> children;
     private int rule;
+    private boolean isEpsilon;
+
+    public void setEpsilon(boolean epsilon) {
+        isEpsilon = epsilon;
+    }
 
     public PstInnerNode(Symbol symbol, int ruleID) {
         super(symbol);
         this.rule = ruleID;
         children = new ArrayList<>();
+        isEpsilon = false;
     }
 
     public PstInnerNode(Symbol symbol) {
@@ -41,10 +48,14 @@ public class PstInnerNode extends PstNode {
         rule = id;
     }
 
+    public boolean isEpsilon() {
+        return isEpsilon;
+    }
+
     public int getRuleId() {
         return rule;
     }
-    public ArrayList<PstNode> getChildren() {
+    public List<PstNode> getChildren() {
         return children;
     }
 

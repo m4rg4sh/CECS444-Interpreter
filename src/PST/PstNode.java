@@ -18,4 +18,6 @@ public abstract class PstNode {
     protected void setSymbol(Symbol symbol) {
         this.symbol = symbol;
     }
+
+    public abstract boolean isEpsilon();
 }

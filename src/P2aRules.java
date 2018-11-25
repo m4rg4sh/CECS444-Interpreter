@@ -1,7 +1,10 @@
-import PST.PstInnerNode;
-import PST.PstNode;
+import PST.*;
 
 public class P2aRules {
+
+    private P2aRules() {
+        //should never be called
+    }
 
     // Pgm = kwdprog Vargroup Fcndefs Main
     public static void rule1(PstInnerNode node) {
@@ -9,16 +12,7 @@ public class P2aRules {
         PstNode kid1 = node.getChild(0);
         node.copyFrom(kid1);
 
-        //check if Vargroup and/or Fcndefs are eps and remove them if so
-        PstNode kid2 = node.getChild(1);
-        PstNode kid3 = node.getChild(2);
-        if (((PstInnerNode) kid2).getChildCount() == 0) {
-            node.removeChild(kid2);
-        }
-        if (((PstInnerNode) kid3).getChildCount() == 0) {
-            node.removeChild(kid3);
-        }
-
+        removeEpsilonKids(node);
         node.removeChild(kid1);
     }
 
@@ -36,23 +30,15 @@ public class P2aRules {
         PstNode kid1 = node.getChild(0);
         node.copyFrom(kid1);
 
-        //check if Vargroup and/or Stmts are eps and remove them if so
-        PstNode kid2 = node.getChild(1);
-        PstNode kid3 = node.getChild(2);
-        if (((PstInnerNode) kid2).getChildCount() == 0) {
-            node.removeChild(kid2);
-        }
-        if (((PstInnerNode) kid3).getChildCount() == 0) {
-            node.removeChild(kid3);
-        }
+        removeEpsilonKids(node);
 
         node.removeChild(node.getChildCount()-1); //remove brace2 which is always the last child
         node.removeChild(kid1);
     }
 
     // Vargroup = eps
-    public static void rule5(PstNode node) {
-        //do nothing, this node will be removed by parent rule
+    public static void rule5(PstInnerNode node) {
+        node.setEpsilon(true);
     }
 
     // PPvarlist = parens1 Varlist parens2
@@ -61,12 +47,27 @@ public class P2aRules {
     }
 
     // Fcndefs = eps
-    public static void rule55(PstNode node) {
-        //do nothing, this node will be removed by parent rule
+    public static void rule55(PstInnerNode node) {
+        node.setEpsilon(true);
     }
 
     // Stmts = eps
-    public static void rule68(PstNode node) {
-        //do nothing, this node will be removed by parent rule
+    public static void rule68(PstInnerNode node) {
+        node.setEpsilon(true);
+    }
+
+    // StmtT = equal Expr
+    public static void rule131(PstInnerNode node) {
+        // equal AKA kid1 is the new parent
+        PstLeafNode kid1 = (PstLeafNode) node.getChild(0); //equal
+        removeEpsilonKids(node);
+
+        //hoist kid1
+        node.copyFrom(kid1);
+        node.removeChild(kid1);
+    }
+
+    private static void removeEpsilonKids(PstInnerNode node) {
+        node.getChildren().removeIf(PstNode::isEpsilon);
     }
 }

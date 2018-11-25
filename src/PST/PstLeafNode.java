@@ -13,6 +13,10 @@ public class PstLeafNode extends PstNode {
         this.token = token;
     }
 
+    public boolean isEpsilon() {
+        return false;
+    }
+
     public void setToken(Token token) {
         this.token = token;
     }
