@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 /**
  * This class creates tokens using the output from our lexer. The user must stop reading tokens when encountering
  * the EOF token or a IOError will be raised.
+ *
+ * @author Kevin Bui <Kevinthuybui@gmail.com>
  */
 
 public class TokenStreamReader extends InputStreamReader {

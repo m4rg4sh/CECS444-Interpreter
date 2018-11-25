@@ -9,6 +9,8 @@ import java.util.*;
 /**
  * This class represents the machine portion of the LL parse machine. It is responsible for setting up the prediction
  * table, prediction stack, and token stream.
+ *
+ * @author Kevin Bui <Kevinthuybui@gmail.com>
  */
 public class LLParseMachine {
     private static final Symbol START_SYMBOL = NonTerminal.PGM;
@@ -40,7 +42,7 @@ public class LLParseMachine {
     }
 
     private void parse() throws ParserException{
-        parseTable = PredictionTableGenerator.createParseTable();
+        parseTable = ParseTableGenerator.getParseTable();
         boolean parsing = true;
         while(parsing) {
             try {
