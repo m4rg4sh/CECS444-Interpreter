@@ -21,7 +21,7 @@ public class ParseTable{
         return parseTableMap.containsKey(key);
     }
     
-    public Object get(Object key) {
+    public Rule get(Prediction key) {
         return parseTableMap.get(key);
     }
     

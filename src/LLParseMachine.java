@@ -68,44 +68,63 @@ public class LLParseMachine {
         }
         serializeTree(pstRoot);
         pst2ast(pstRoot);
-
+        serializeTree(pstRoot);
     }
 
     private void executeRule(Symbol topOfStack, Token token, PstInnerNode parentNode) throws ParserException {
         Prediction prediction = new Prediction((NonTerminal) topOfStack, Terminal.valueOf(token.getId()));
         if (parseTable.containsKey(prediction)) {
-            Rule rule = (Rule) parseTable.get(prediction);
+            Rule rule = parseTable.get(prediction);
+            parentNode.setRule(rule.getId());
             List<Symbol> rhs = new ArrayList<>(rule.getRhs());
             Collections.reverse(rhs);
+            List<PstNode> newNodes = new ArrayList<>();
             for (Symbol symbol : rhs) {
                 PstNode newNode;
                 if (symbol instanceof Terminal) {
                     newNode = new PstLeafNode(symbol, token);
                 } else {
-                    newNode = new PstInnerNode(symbol, rule.getId());
+                    newNode = new PstInnerNode(symbol);
                 }
                 stack.push(newNode);
-                parentNode.addChild(newNode);
+                newNodes.add(newNode);
+            }
+            Collections.reverse(newNodes);
+            for (PstNode node : newNodes) {
+                parentNode.addChild(node);
             }
         } else {
             throw new ParserException("ParseException: Prediction not in table. Token:" + token +", Symbol:" +
             topOfStack);
         }
     }
-    
-    private void serializeTree(PstNode node){
-        System.out.printf("%n(Node: ");
+
+    private void serializeTree(PstNode node) {
+        serializeTree(node, 0);
+        System.out.printf("%n");
+    }
+
+    private void serializeTree(PstNode node, int identation){
+        System.out.printf("%n");
+        for (int i = 0; i < identation; ++i) {
+            System.out.printf("\t");
+        }
+        System.out.printf("(Node: ");
         printLocalFieldInfo(node);
         if (node instanceof PstInnerNode) {
             for (PstNode child : ((PstInnerNode) node).getChildren()) {
-                serializeTree(child);
+                serializeTree(child, identation+1);
             }
         }
-        System.out.println(")");
+        System.out.printf("%n");
+        for (int i = 0; i < identation; ++i) {
+            System.out.printf("\t");
+        }
+        System.out.printf(")");
     }
 
     private void printLocalFieldInfo(PstNode node) {
-        System.out.printf("\t(Type:%s; ID:%d)", node.getSymbol().getClass().getSimpleName(), node.hashCode()); //TODO implement hascode in a useful way
+        System.out.printf("\t(Type=%s; Symbol=%s; ID=%d)", node.getSymbol().getClass().getSimpleName(), node.getSymbol(), node.hashCode()); //TODO implement hascode in a useful way
         //TODO print the rest of the stuff, I don't get what he wants here
 
     }
@@ -128,8 +147,23 @@ public class LLParseMachine {
             case 2:
                 P2aRules.rule2(node);
                 break;
+            case 3:
+                P2aRules.rule3(node);
+                break;
+            case 5:
+                P2aRules.rule5(node);
+                break;
+            case 6:
+                P2aRules.rule6(node);
+                break;
+            case 55:
+                P2aRules.rule55(node);
+                break;
+            case 68:
+                P2aRules.rule68(node);
+                break;
             default:
-                P2aRules.rule1(node);
+                //TODO throw error
         }
 
     }

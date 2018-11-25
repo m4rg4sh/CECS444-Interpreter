@@ -1,9 +1,8 @@
 package PST;
 
 import Symbols.Symbol;
-import Tree.TreeNode;
 
-public abstract class PstNode implements TreeNode {
+public abstract class PstNode {
     private Symbol symbol;
 
     //TODO store the rule that was used
@@ -14,5 +13,9 @@ public abstract class PstNode implements TreeNode {
 
     public Symbol getSymbol() {
         return symbol;
+    }
+
+    protected void setSymbol(Symbol symbol) {
+        this.symbol = symbol;
     }
 }
