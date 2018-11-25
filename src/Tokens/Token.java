@@ -49,6 +49,10 @@ public class Token {
         return codeString;
     }
 
+    public String toTreeString() {
+        return String.format("CODE=%s; LINE=%d", getCodeString(), getLineNumber());
+    }
+
     /**
      * Converts the Token to a String according to the specifications of the project
      * @return The token as a string

@@ -126,8 +126,12 @@ public class LLParseMachine {
     }
 
     private void printLocalFieldInfo(PstNode node) {
-        System.out.printf("\t(Type=%s; Symbol=%s; ID=%d)", node.getSymbol().getClass().getSimpleName(), node.getSymbol(), node.hashCode()); //TODO implement hascode in a useful way
-        //TODO print the rest of the stuff, I don't get what he wants here
+        System.out.printf("\t(TYPE=%s; SYMBOL=%s; ID=%d", node.getSymbol().getClass().getSimpleName(), node.getSymbol(), node.hashCode()); //TODO implement hascode in a useful way
+        Token token = node.getToken();
+        if (null != token) {
+            System.out.printf("; %s", token.toTreeString());
+        }
+        System.out.printf(")");
 
     }
 
