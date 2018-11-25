@@ -338,7 +338,7 @@ public class P2aRules {
 
     // PPonly = parens1 parens2
     public static void rule66(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Stmts = Stmt semi Stmts
@@ -450,7 +450,7 @@ public class P2aRules {
 
     // PPexprsT = Exprlist parens2
     public static void rule87(PstInnerNode node) {
-        // ?? unsure about this one
+        hoistKid(0, node);
     }
 
     // PPexprsT = parens2
