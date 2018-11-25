@@ -5,23 +5,53 @@ import Symbols.Terminal;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PredictionTableGenerator {
+/**
+ * This class handles the creation of the lookup table for our LLParseMachine.
+ *
+ * @author Kevin Bui <Kevinthuybui@gmail.com>
+ */
+public class ParseTableGenerator {
+    /**
+     * The ParseTable is stored for reuse and to avoid multiple copies being created.
+     */
     private static ParseTable parseTable;
-
-    private PredictionTableGenerator() {
+    
+    /**
+     * The constructor is hidden to force the user to use the static getParseTable function.
+     */
+    private ParseTableGenerator() {
         //hides default constructor
     }
-
-    public static ParseTable createParseTable(){
+    
+    /**
+     * This is the method to use to access the static parseTable.
+     * @return the parseTable
+     */
+    public static ParseTable getParseTable(){
         if (parseTable == null){
             fillParseTable();
         }
         
         return parseTable;
     }
+    
+    /**
+     * This function takes any number of RHS symbols and adds it to the RHS array.
+     * @param rhs The array of RHS symbols to be stored
+     * @param args The array of RHS symbols passed in as a list of symbols
+     */
     private static void fillRule(ArrayList<Symbol> rhs, Symbol... args){
         Collections.addAll(rhs, args);
     }
+    
+    /**
+     * This function iterates over any number of Terminal symbols and adds it to the parseTable.
+     * @param map The parseTable
+     * @param nonTerminal The NonTerminal portion of the Prediction
+     * @param rules The RHS array
+     * @param ruleNumber The number of the rule.
+     * @param terminals Any number of terminals to be added to the parseTable
+     */
     private static void fillMultipleCells(ParseTable map,
                                           NonTerminal nonTerminal, ArrayList<Symbol> rules, int ruleNumber,
                                           Terminal ... terminals){
@@ -29,6 +59,10 @@ public class PredictionTableGenerator {
             map.put(new Prediction(nonTerminal, terminal), rules, ruleNumber);
         }
     }
+    
+    /**
+     * This function handles the process of initializing and filling the parseTable. The rule is indicated by a comment.
+     */
     
     private static void fillParseTable() {
         parseTable = new ParseTable();
@@ -392,7 +426,13 @@ public class PredictionTableGenerator {
         rhs = new ArrayList<>();
         
         parseTable.put(new Prediction(NonTerminal.STMTS,Terminal.BRACE2), rhs, ruleNumber++);
-        
+    
+        //Stmt = Stasgn
+        ruleNumber++;
+        //Stmt = Fcall
+        ruleNumber++;
+    
+    
         //Stmt = Stif
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.STIF);
@@ -437,6 +477,7 @@ public class PredictionTableGenerator {
 //        rhs = new ArrayList<>();
 //        fillRule(rhs, NonTerminal.LVAL, Terminal.EQUAL, NonTerminal.EXPR);
 //        fillMultipleCells(predictionTable, NonTerminal.STASGN, rhs, ruleNumber++, Terminal.ID, Terminal.ASTER);
+        ruleNumber++;
         
         //Lval = id LvalT
         rhs = new ArrayList<>();
@@ -467,6 +508,7 @@ public class PredictionTableGenerator {
 //        rhs = new ArrayList<>();
 //        fillRule(rhs, NonTerminal.FCNID, NonTerminal.PPEXPRS);
 //        parseTable.put(new Prediction(NonTerminal.FCALL,Terminal.ID), rhs, ruleNumber++);
+        ruleNumber++;
         
         //PPexprs = parens1 PPexprsT
         rhs = new ArrayList<>();
@@ -716,7 +758,7 @@ public class PredictionTableGenerator {
         //StmtT = equal Expr
         rhs = new ArrayList<>();
         fillRule(rhs, Terminal.EQUAL, NonTerminal.EXPR);
-        parseTable.put(new Prediction(NonTerminal.STMTT, Terminal.EQUAL), rhs, ruleNumber++);
+        parseTable.put(new Prediction(NonTerminal.STMTT, Terminal.EQUAL), rhs, ruleNumber);
         
     }
 }

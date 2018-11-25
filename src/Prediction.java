@@ -2,7 +2,8 @@ import Symbols.NonTerminal;
 import Symbols.Terminal;
 
 /**
- *  This class represents the Tupel (Non-Terminal, terminal) that is used to check the prediction table for our LL parse machine.
+ *  This class represents the Tuple (Non-Terminal, terminal) that is used to check the prediction table for our LL parse machine.
+ *  @author Kevin Bui <Kevinthuybui@gmail.com>
  */
 public class Prediction {
     private NonTerminal lhs;
