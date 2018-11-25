@@ -35,11 +35,6 @@ public class P2aRules {
     }
 
     // PPvarlist = parens1 Varlist parens2
-    public static void rule6(PstNode node) {
-        //TODO implement this
-    }
-
-    // PPvarlist = parens1 Varlist parens2
     public static void rule6(PstInnerNode node) {
 
     }
@@ -261,7 +256,8 @@ public class P2aRules {
 
     // Mddecls = Mdheader Mddecls
     public static void rule50(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Mddecls = eps
@@ -271,17 +267,18 @@ public class P2aRules {
 
     // Mdheader = kwdfcn Md_id PParmlist Retkind
     public static void rule52(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Md_id = Classid colon Fcnid
     public static void rule53(PstInnerNode node) {
-
+        hoistKid(1, node); // Is this right?
     }
 
     // Fcndefs = Fcndef Fcndefs
     public static void rule54(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Fcndefs = eps
@@ -291,46 +288,47 @@ public class P2aRules {
 
     // Fcndef = Fcnheader BBlock
     public static void rule56(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Fcnheader = kwdfcn Fcnid PParmlist Retkind
     public static void rule57(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Fcnid = id
     public static void rule58(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Retkind = Simplekind
     public static void rule59(PstInnerNode node){
-
+        hoistKid(0, node);
     }
     // PParmlist = parens1 PParmlistT
     public static void rule60(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // PParmlistT = Varspecs parens2
     public static void rule61(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // PParmlistT = parens2
     public static void rule62(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Varspecs = Varspec More_varspecs
     public static void rule63(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // More_varspecs = comma Varspecs
     public static void rule64(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // More_varspecs = eps
@@ -356,32 +354,32 @@ public class P2aRules {
 
     // Stmt = Stasgn
     public static void rule69(PstInnerNode node) {
-
+        // --- CROSSED OUT ---
     }
 
     // Stmt = Fcall
     public static void rule70(PstInnerNode node) {
-
+        // --- CROSSED OUT ---
     }
 
     // Stmt = Stif
     public static void rule71(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Stmt = Stwhile
     public static void rule72(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Stmt = Stprint
     public static void rule73(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Stmt = Strtn
     public static void rule74(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // Stmt = Deref_id equal Expr
@@ -392,17 +390,19 @@ public class P2aRules {
 
     // Stmt = id StmtT
     public static void rule76(PstInnerNode node) {
-
+        hoistKid(0, node);
     }
 
     // StmtT = LvalT StmtT
     public static void rule77(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // StmtT = PPexprs
     public static void rule78(PstInnerNode node) {
-
+        removeEpsilonKids(node);
+        hoistKid(0, node);
     }
 
     // Stasgn = Lval equal Expr
@@ -419,7 +419,7 @@ public class P2aRules {
 
     // Lval = Deref_id
     public static void rule81(PstInnerNode node) {
-        // ?? unsure about this one
+        hoistKid(0, node);
     }
 
     // LvalT = eps
@@ -429,7 +429,7 @@ public class P2aRules {
 
     // LvalT = KKexpr
     public static void rule83(PstInnerNode node) {
-        // ?? unsure about this one
+        hoistKid(0, node);
     }
 
     // KKexpr = bracket1 Expr bracket2
