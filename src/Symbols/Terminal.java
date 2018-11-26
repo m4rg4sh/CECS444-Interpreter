@@ -7,7 +7,7 @@ import java.util.Arrays;
  *
  * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
  * @author Kevin Bui <Kevinthuybui@gmail.com>
- * @author Gabriel Flores <rgabeflores@gmail.com>
+ * @author Gabe Flores <rgabeflores@gmail.com>
  */
 public enum Terminal implements Symbol {
     COMMENT(1),
