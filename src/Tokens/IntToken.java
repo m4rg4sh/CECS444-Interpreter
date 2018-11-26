@@ -15,6 +15,11 @@ public class IntToken extends Token {
         super(id, lineNumber, name);
         this.value = value;
     }
+
+    public String toTreeString() {
+        return String.format("CODE=\"%s\"; INT=%d LINE=%d", getCodeString(), value, getLineNumber());
+    }
+
     @Override
     public String toString()
     {

@@ -15,6 +15,11 @@ public class FloatToken extends Token {
         super(id,lineNumber, name);
         this.value = value;
     }
+
+    public String toTreeString() {
+        return String.format("CODE=\"%s\"; FLOAT=%.2f LINE=%d", getCodeString(), value, getLineNumber());
+    }
+
     @Override
     public String toString()
     {

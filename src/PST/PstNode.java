@@ -11,7 +11,12 @@ public abstract class PstNode {
 
     public PstNode(Symbol symbol, Token token) {
         this.symbol = symbol;
+        if (null != token) {
         this.token = Optional.of(token);
+        } else {
+            this.token = Optional.empty();
+        }
+
     }
 
     public PstNode(Symbol symbol) {
@@ -27,7 +32,7 @@ public abstract class PstNode {
         this.symbol = symbol;
     }
 
-    protected void setToken(Token token) {
+    public void setToken(Token token) {
         this.token = Optional.of(token);
     }
 
