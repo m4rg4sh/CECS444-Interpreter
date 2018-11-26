@@ -1,5 +1,10 @@
 import PST.*;
 
+/**
+ * This class contains the set of conversion rules for the PST to AST process.
+ *
+ * @author Gabriel Flores <rgabeflores@gmail.com>
+ */
 public class P2aRules {
 
     private P2aRules() {
