@@ -3,10 +3,16 @@ package PST;
 import Symbols.Symbol;
 import Tokens.Token;
 
+import java.util.Optional;
+
 public class PstLeafNode extends PstNode {
 
     public PstLeafNode(Symbol symbol, Token token) {
         super(symbol,token);
+    }
+
+    public PstLeafNode(Symbol symbol) {
+        this(symbol, null);
     }
 
     public boolean isEpsilon() {

@@ -44,7 +44,7 @@ public class P2aRules {
     // Varlist = Varitem semi Varlist
     public static void rule7(PstInnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0, node);
+        hoistKid(1, node);
     }
 
     // Varlist = eps

@@ -53,6 +53,8 @@ public class LLParseMachine {
                     if (token.getId() == Terminal.EOF.getId()) {
                         parsing = false;
                     }
+                    //add token to tree
+                    pstPointer.setToken(token);
                     tokenStream.getNextToken(); //Advances the input. Stack already popped.
                 } else if (topOfStack instanceof Terminal) {
                     throw new ParserException("ParseException: Top of stack is Terminal. Token :" + token + ", Symbol :"
@@ -84,7 +86,7 @@ public class LLParseMachine {
             for (Symbol symbol : rhs) {
                 PstNode newNode;
                 if (symbol instanceof Terminal) {
-                    newNode = new PstLeafNode(symbol, token);
+                    newNode = new PstLeafNode(symbol);
                 } else {
                     newNode = new PstInnerNode(symbol);
                 }
