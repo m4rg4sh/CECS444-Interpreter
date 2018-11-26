@@ -5,6 +5,11 @@ import Tokens.Token;
 
 import java.util.Optional;
 
+/**
+ * This is the interface for all pst nodes. Used to create the PST and AST.
+ *
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ */
 public abstract class PstNode {
     private Symbol symbol;
     private Optional<Token> token;

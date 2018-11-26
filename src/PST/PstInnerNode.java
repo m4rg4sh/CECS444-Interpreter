@@ -4,18 +4,35 @@ import Symbols.Symbol;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is the node that contains a non-terminal
+ *
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ */
 public class PstInnerNode extends PstNode {
     private ArrayList<PstNode> children;
     private int rule;
+    /**
+     * This boolean is used for PST to AST conversions as a flag to safely delete
+     */
     private boolean isEpsilon;
-
+    
+    /**
+     * Constructor
+     * @param symbol The symbol to be stored
+     * @param ruleID The rule id that created this node
+     */
     public PstInnerNode(Symbol symbol, int ruleID) {
         super(symbol);
         this.rule = ruleID;
         children = new ArrayList<>();
         isEpsilon = false;
     }
-
+    
+    /**
+     * Default Constructor
+     * @param symbol The symbol to be stored
+     */
     public PstInnerNode(Symbol symbol) {
         this(symbol, 0);
     }

@@ -2,6 +2,12 @@ package Symbols;
 
 import java.util.Arrays;
 
+/**
+ * This represents the possible terminals in the language.
+ *
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ * @author Kevin Bui <Kevinthuybui@gmail.com>
+ */
 public enum Terminal implements Symbol {
     COMMENT(1),
     ID(2),
@@ -63,7 +69,12 @@ public enum Terminal implements Symbol {
     public int getId() {
         return id;
     }
-
+    
+    /**
+     * This function returns the matching Terminal for given id value.
+     * @param value The id of the desired Terminal
+     * @return The matching terminal
+     */
     public static Terminal valueOf(int value) {
         return Arrays.stream(values())
                 .filter(terminal -> terminal.id == value)

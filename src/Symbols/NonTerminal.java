@@ -1,5 +1,11 @@
 package Symbols;
 
+/**
+ * This is an enumeration of all possible Non-Terminal symbols.
+ *
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ * @author Kevin Bui<Kevinthuybui@gmail.com>
+ */
 public enum NonTerminal implements Symbol {
     PGM(0),
     MAIN(1),
