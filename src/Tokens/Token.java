@@ -35,20 +35,33 @@ public class Token {
         this.lineNumber = lineNumber;
     }
 
+    /**
+     * @return the ID of the token
+     */
     public int getId() {
         return id;
     }
-    
+
+    /**
+     * @return The line number on which the token was found
+     */
     public int getLineNumber()
     {
         return lineNumber;
     }
-    
+
+    /**
+     * @return The original input code fragment
+     */
     public String getCodeString() {
     
         return codeString;
     }
 
+    /**
+     * Converts the token to a string which is formatted correctly for PST/AST output
+     * @return formatted string representation of the token
+     */
     public String toTreeString() {
         return String.format("CODE=\"%s\"; LINE=%d", getCodeString(), getLineNumber());
     }

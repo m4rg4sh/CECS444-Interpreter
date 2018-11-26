@@ -63,6 +63,12 @@ public class TokenStreamReader extends InputStreamReader {
             return result;
         }
     }
+
+    /**
+     * @return The next token in the input stream
+     * @throws TokenInputMalformedException
+     * @throws IOException
+     */
     public Token peek() throws TokenInputMalformedException, IOException {
         tokenBuffer = getNextToken();
         return tokenBuffer;
@@ -75,7 +81,6 @@ public class TokenStreamReader extends InputStreamReader {
      * @return Token
      * @throws TokenInputMalformedException If <code>tokenMatcher</code> is unable to find a match this error is thrown.
      */
-    
     private Token createToken(String tokenString) throws TokenInputMalformedException {
         tokenMatcher.reset(tokenString);
         if (tokenMatcher.find()) {
