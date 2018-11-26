@@ -1,6 +1,12 @@
 import Symbols.Terminal;
 import Tokens.*;
 
+/**
+ * This class holds the necessary methods to create token objects
+ *
+ * @author Kevin Bui <Kevinthuybui@gmail.com>
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ */
 public class TokenFactory {
 
     private TokenFactory() {

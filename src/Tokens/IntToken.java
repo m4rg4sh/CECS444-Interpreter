@@ -16,10 +16,18 @@ public class IntToken extends Token {
         this.value = value;
     }
 
+    /**
+     * Converts the token to a string which is formatted correctly for PST/AST output
+     * @return formatted string representation of the token
+     */
     public String toTreeString() {
         return String.format("CODE=\"%s\"; INT=%d LINE=%d", getCodeString(), value, getLineNumber());
     }
 
+    /**
+     * Converts the Token to a String according to the specifications of the project
+     * @return The token as a string
+     */
     @Override
     public String toString()
     {
