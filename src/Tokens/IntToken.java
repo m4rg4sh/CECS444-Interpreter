@@ -17,7 +17,7 @@ public class IntToken extends Token {
     }
 
     public String toTreeString() {
-        return String.format("CODE=%s; INT=%d LINE=%d", getCodeString(), value, getLineNumber());
+        return String.format("CODE=\"%s\"; INT=%d LINE=%d", getCodeString(), value, getLineNumber());
     }
 
     @Override

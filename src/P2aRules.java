@@ -20,7 +20,7 @@ public class P2aRules {
     // BBlock = brace1 Vargroup Stmts brace2
     public static void rule3(PstInnerNode node) {
         removeEpsilonKids(node);
-        node.removeChild(node.getChildCount()-1); //remove brace2 which is always the last child
+        //node.removeChild(node.getChildCount()-1); //remove brace2 which is always the last child
         hoistKid(0,node);
     }
 
@@ -681,14 +681,12 @@ public class P2aRules {
     // FactT = PPexprs
     public static void rule114(PstInnerNode node) {
         removeEpsilonKids(node);
-        node.removeChild(node.getChildCount()-1); //remove brace2 which is always the last child
         hoistKid(0,node);
     }
 
     // FactT = KKexpr
     public static void rule115(PstInnerNode node) {
         removeEpsilonKids(node);
-        node.removeChild(node.getChildCount()-1); //remove bracket2 which is always the last child
         hoistKid(0,node);
     }
 

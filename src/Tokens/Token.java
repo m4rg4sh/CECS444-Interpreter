@@ -50,7 +50,7 @@ public class Token {
     }
 
     public String toTreeString() {
-        return String.format("CODE=%s; LINE=%d", getCodeString(), getLineNumber());
+        return String.format("CODE=\"%s\"; LINE=%d", getCodeString(), getLineNumber());
     }
 
     /**

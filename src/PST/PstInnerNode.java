@@ -56,7 +56,7 @@ public class PstInnerNode extends PstNode {
     public int getRuleId() {
         return rule;
     }
-    public List<PstNode> getChildren() {
+    public ArrayList<PstNode> getChildren() {
         return children;
     }
 
@@ -65,7 +65,9 @@ public class PstInnerNode extends PstNode {
         if (sourceNode.getToken() != null) {
             setToken(sourceNode.getToken());
         }
-        //TODO potentially copy other stuff that isn't implemented yet
+        if (sourceNode instanceof PstInnerNode) {
+            children.addAll(((PstInnerNode) sourceNode).getChildren());
+        }
     }
 
     @Override
