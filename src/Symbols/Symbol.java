@@ -7,4 +7,5 @@ package Symbols;
  */
 public interface Symbol {
     int getId();
+    boolean createsScope();
 }

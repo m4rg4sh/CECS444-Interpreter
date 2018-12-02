@@ -17,10 +17,10 @@ public enum Terminal implements Symbol {
     STRING(5),
     COMMA(6),
     SEMI(7),
-    KPROG(10),
-    KMAIN(11),
-    KFCN(12),
-    KCLASS(13),
+    KPROG(10,true),
+    KMAIN(11,true),
+    KFCN(12,true),
+    KCLASS(13,true),
     KFLOAT(15),
     KINT(16),
     KSTRING(17),
@@ -62,15 +62,26 @@ public enum Terminal implements Symbol {
     AMPERSAND(101);
 
     private final int id;
+    private final boolean createsScrope;
+
+    Terminal(int id, boolean createsScope) {
+        this.id = id;
+        this.createsScrope = createsScope;
+    }
 
     Terminal(int id) {
-        this.id = id;
+        this(id,false);
     }
 
     public int getId() {
         return id;
     }
-    
+
+    @Override
+    public boolean createsScope() {
+        return createsScrope;
+    }
+
     /**
      * This function returns the matching Terminal for given id value.
      * @param value The id of the desired Terminal

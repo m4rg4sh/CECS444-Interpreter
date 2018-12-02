@@ -94,4 +94,9 @@ public enum NonTerminal implements Symbol {
     NonTerminal(int id) {
         this.id = id;
     }
+
+    @Override
+    public boolean createsScope() {
+        return false;
+    }
 }

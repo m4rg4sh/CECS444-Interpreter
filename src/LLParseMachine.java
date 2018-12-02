@@ -86,6 +86,9 @@ public class LLParseMachine {
             }
         }
         printPSTandAST();
+        SctBuilder sctBuilder = new SctBuilder();
+        sctBuilder.buildSct(treeRoot);
+        sctBuilder.printScopeTree();
     }
     
     /**
