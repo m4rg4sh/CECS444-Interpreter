@@ -6,6 +6,9 @@ import Tree.Node;
 public class SymtabEntry {
     private Node idNode;
     private String identifier;
+    private Object data;
+    /*TODO Each variable can have its box as a slot directly in its symtab entry in its SCT node, or provide a reference to box which might
+    be hosted elsewhere in your interpreter's heap memory. Note that as we have several data types */
 
     public SymtabEntry(Node idNode, Token token) {
         this.idNode = idNode;

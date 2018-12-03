@@ -36,7 +36,7 @@ public class SctBuilder {
         } else if (isNewDeclaration(astNode)) {
             astNode.setScope(currentNode,currentNode.addSymbol(astNode));
         } else if (isIdentifier(astNode.getToken())) {
-            //TODO add handler for an existing symbol, I don't know what to do here
+            //TODO An AST identifier usage node should be linked to the SCT node containing its symtab.
         } else if (isClosingNode(astNode)) {
             currentNode = currentNode.getParentNode();
         }

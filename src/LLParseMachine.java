@@ -36,7 +36,7 @@ public class LLParseMachine {
     /**
      * Default constructor. Initializes the tokenStream and stack.
      */
-    private LLParseMachine() {
+    public LLParseMachine() {
         tokenStream = new TokenStreamReader(System.in);
         initializeStack();
     }
@@ -57,7 +57,7 @@ public class LLParseMachine {
      * the algorithm for checking the syntax and building the PST and AST.
      * @throws ParserException
      */
-    private void parse() throws ParserException{
+    public void parse() throws ParserException{
         parseTable = ParseTableGenerator.getParseTable();
         boolean parsing = true;
         while(parsing) {
@@ -86,9 +86,6 @@ public class LLParseMachine {
             }
         }
         printPSTandAST();
-        SctBuilder sctBuilder = new SctBuilder();
-        sctBuilder.buildSct(treeRoot);
-        sctBuilder.printScopeTree();
     }
     
     /**
@@ -207,4 +204,7 @@ public class LLParseMachine {
         //no else needed, leaf nodes get converted while the parent node is handled
     }
 
+    public Node getAst() {
+        return treeRoot;
+    }
 }
