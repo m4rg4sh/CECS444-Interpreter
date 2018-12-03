@@ -31,6 +31,7 @@ public class SymtabEntry {
         return token.getCodeString();
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof SymtabEntry) {

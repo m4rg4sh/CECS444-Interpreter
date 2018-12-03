@@ -1,11 +1,9 @@
 package Tree.Ast;
 
 import Symbols.Symbol;
-import Interpreter.Symtab.SymtabEntry;
 import Tokens.Token;
-import Tree.SctNode;
+import Tree.Sct.GeneralSctNode;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -16,7 +14,7 @@ import java.util.Optional;
 public abstract class Node {
     private Symbol symbol;
     private Optional<Token> token;
-    private SctNode scope;
+    private GeneralSctNode scope;
     private int symtabIndex;
 
     /**
@@ -81,23 +79,28 @@ public abstract class Node {
      */
     public abstract boolean isEpsilon();
 
-    public void setScope(SctNode scopeNode, int index) {
+    /**
+     * Links this node to a scope in the scope tree and sets the index where we can find the identifer in the symtab
+     * @param scopeNode the scope node to link to
+     * @param index the index of the identifier in the symbtab
+     */
+    public void setScope(GeneralSctNode scopeNode, int index) {
         scope = scopeNode;
         symtabIndex = index;
     }
 
-    public void setScope(SctNode scope) {
-        this.scope = scope;
-        symtabIndex = -1;
+    /**
+     * Links this node to a scope in the scope tree
+     * @param scope the scope node to link to
+     */
+    public void setScope(GeneralSctNode scope) {
+        setScope(scope,-1);
     }
 
-    public SymtabEntry getSymtabEntry() {
-        if (symtabIndex == -1) {
-            throw new NoSuchElementException();
-        }
-        return scope.getSymtab().get(symtabIndex);
-    }
 
+    /**
+     * @return true if this node links to a scope node
+     */
     public boolean hasScope() {
         return scope != null;
     }

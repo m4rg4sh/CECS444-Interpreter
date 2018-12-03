@@ -3,20 +3,19 @@ package Interpreter;
 import Symbols.Terminal;
 import Interpreter.Symtab.SymtabEntry;
 import Tokens.Token;
-import Tree.Ast.InnerNode;
-import Tree.Ast.Node;
-import Tree.SctNode;
+import Tree.Ast.*;
+import Tree.Sct.*;
 
 public class SctBuilder {
-    private SctNode rootNode;
-    private SctNode currentNode;
+    private SctRootNode rootNode;
+    private GeneralSctNode currentNode;
 
     public SctBuilder() {
-        rootNode = new SctNode();
+        rootNode = new SctRootNode();
         currentNode = rootNode;
     }
 
-    public SctNode buildSct(Node astRootNode) {
+    public GeneralSctNode buildSct(Node astRootNode) {
         walkAst(astRootNode);
         return rootNode;
     }
@@ -38,9 +37,11 @@ public class SctBuilder {
         } else if (isNewDeclaration(astNode)) {
             astNode.setScope(currentNode,currentNode.addSymbol(astNode));
         } else if (isIdentifier(astNode.getToken())) {
-            //TODO An AST identifier usage node should be linked to the SCT node containing its symtab.
+            GeneralSctNode scopeNode = currentNode.getScope(astNode.getToken());
+            int index = scopeNode.indexOf(astNode.getToken());
+            astNode.setScope(scopeNode,index);
         } else if (isClosingNode(astNode)) {
-            currentNode = currentNode.getParentNode();
+            currentNode = ((SctNode)currentNode).getParentNode();
         }
     }
 
@@ -64,13 +65,17 @@ public class SctBuilder {
     }
 
     public void printScopeTree() {
-        SctNode printNode = rootNode;
-        while (printNode != null) {
+        GeneralSctNode printNode = rootNode;
+        while (true) {
             int index = 0;
-            for (SymtabEntry e : printNode.getSymtab()) {
+            for (SymtabEntry e : printNode) {
                 System.out.println("[" + index++ + "] | ID: " + e.getIdentifier() + " | Opened by: " + e.getIdNode().getToken().toTreeString());
             }
-            printNode = printNode.getChildNode();
+            if (printNode.hasChild()) {
+                printNode = printNode.getChildNode();
+            } else {
+                break;
+            }
         }
     }
 }
