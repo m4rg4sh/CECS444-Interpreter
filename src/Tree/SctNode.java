@@ -1,7 +1,8 @@
 package Tree;
 
-import Symtab.SymtabEntry;
+import Interpreter.Symtab.SymtabEntry;
 import Tokens.Token;
+import Tree.Ast.Node;
 
 import java.util.ArrayList;
 import java.util.List;

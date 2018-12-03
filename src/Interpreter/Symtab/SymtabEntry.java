@@ -1,7 +1,7 @@
-package Symtab;
+package Interpreter.Symtab;
 
 import Tokens.Token;
-import Tree.Node;
+import Tree.Ast.Node;
 
 public class SymtabEntry {
     private Node idNode;

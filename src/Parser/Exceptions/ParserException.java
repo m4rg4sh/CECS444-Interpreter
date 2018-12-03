@@ -1,4 +1,4 @@
-package Exceptions;
+package Parser.Exceptions;
 
 /**
  * This is an exception for the 3 possible parser errors

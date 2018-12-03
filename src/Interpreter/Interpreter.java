@@ -1,5 +1,8 @@
-import Exceptions.ParserException;
-import Tree.Node;
+package Interpreter;
+
+import Parser.Exceptions.ParserException;
+import Parser.LLParseMachine;
+import Tree.Ast.Node;
 
 public class Interpreter {
     private Node ast;

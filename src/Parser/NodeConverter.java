@@ -1,5 +1,7 @@
-import Exceptions.ParserException;
-import Tree.InnerNode;
+package Parser;
+
+import Parser.Exceptions.ParserException;
+import Tree.Ast.InnerNode;
 
 /**
  * This class handles calling the appropriate rule for given node.

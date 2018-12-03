@@ -1,8 +1,9 @@
-package Tree;
+package Tree.Ast;
 
 import Symbols.Symbol;
-import Symtab.SymtabEntry;
+import Interpreter.Symtab.SymtabEntry;
 import Tokens.Token;
+import Tree.SctNode;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;

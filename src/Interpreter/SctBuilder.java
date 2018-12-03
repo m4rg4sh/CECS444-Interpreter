@@ -1,8 +1,10 @@
+package Interpreter;
+
 import Symbols.Terminal;
-import Symtab.SymtabEntry;
+import Interpreter.Symtab.SymtabEntry;
 import Tokens.Token;
-import Tree.InnerNode;
-import Tree.Node;
+import Tree.Ast.InnerNode;
+import Tree.Ast.Node;
 import Tree.SctNode;
 
 public class SctBuilder {

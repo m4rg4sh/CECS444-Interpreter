@@ -1,7 +1,12 @@
-import Exceptions.*;
-import Tree.*;
+package Parser;
+
+import Parser.Exceptions.*;
 import Symbols.*;
 import Tokens.Token;
+import Tree.Ast.InnerNode;
+import Tree.Ast.LeafNode;
+import Tree.Ast.Node;
+
 import java.io.IOException;
 import java.util.*;
 

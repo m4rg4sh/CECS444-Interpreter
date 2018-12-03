@@ -1,4 +1,4 @@
-package Exceptions;
+package Parser.Exceptions;
 
 /**
  * This is the exception for situations where the token regex fails.

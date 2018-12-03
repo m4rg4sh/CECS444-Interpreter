@@ -1,4 +1,6 @@
-import Exceptions.TokenInputMalformedException;
+package Parser;
+
+import Parser.Exceptions.TokenInputMalformedException;
 import Symbols.Terminal;
 import Tokens.Token;
 

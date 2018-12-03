@@ -1,3 +1,5 @@
+package Parser;
+
 import Symbols.NonTerminal;
 import Symbols.Terminal;
 

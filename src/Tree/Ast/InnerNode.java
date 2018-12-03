@@ -1,4 +1,4 @@
-package Tree;
+package Tree.Ast;
 
 import Symbols.Symbol;
 import java.util.ArrayList;

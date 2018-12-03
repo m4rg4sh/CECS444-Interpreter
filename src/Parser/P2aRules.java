@@ -1,4 +1,7 @@
-import Tree.*;
+package Parser;
+
+import Tree.Ast.InnerNode;
+import Tree.Ast.Node;
 
 /**
  * This class holds all handlers to convert a node from PST to AST
