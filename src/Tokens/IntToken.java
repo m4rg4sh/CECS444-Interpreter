@@ -1,5 +1,7 @@
 package Tokens;
 
+import Symbols.Symbol;
+
 /**
  * Subclass of Token which represents an Integer.
  * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
@@ -11,8 +13,8 @@ public class IntToken extends Token {
      */
     private int value;
 
-    public IntToken(int id, int lineNumber, String name, int value) {
-        super(id, lineNumber, name);
+    public IntToken(Symbol symbol, int lineNumber, String name, int value) {
+        super(symbol, lineNumber, name);
         this.value = value;
     }
 

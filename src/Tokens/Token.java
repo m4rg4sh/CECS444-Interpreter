@@ -1,5 +1,7 @@
 package Tokens;
 
+import Symbols.Symbol;
+
 /**
  *  This class represents a generic Token
  *
@@ -16,7 +18,7 @@ public class Token {
     /**
      * The ID of the token in the A4 language
      */
-    private int id;
+    private Symbol symbol;
 
     /**
      * The line number on which the token was read
@@ -25,12 +27,12 @@ public class Token {
 
     /**
      * Creates a new token
-     * @param id The token ID
+     * @param symbol The symbol
      * @param lineNumber The line number on which it was found
      * @param codeString The code snippet that was scanned
      */
-    public Token(int id, int lineNumber, String codeString) {
-        this.id = id;
+    public Token(Symbol symbol, int lineNumber, String codeString) {
+        this.symbol = symbol;
         this.codeString = codeString;
         this.lineNumber = lineNumber;
     }
@@ -39,7 +41,7 @@ public class Token {
      * @return the ID of the token
      */
     public int getId() {
-        return id;
+        return symbol.getId();
     }
 
     /**

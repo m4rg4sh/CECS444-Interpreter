@@ -18,11 +18,11 @@ public class TokenFactory {
     public static Token createToken(Terminal terminal, int lineNumber, String tokenValue) {
         switch (terminal) {
             case INT:
-                return new IntToken(terminal.getId(), lineNumber, tokenValue, Integer.parseInt(tokenValue));
+                return new IntToken(terminal, lineNumber, tokenValue, Integer.parseInt(tokenValue));
             case FLOAT:
-                return new FloatToken(terminal.getId(), lineNumber, tokenValue, (double) Float.parseFloat(tokenValue));
+                return new FloatToken(terminal, lineNumber, tokenValue, (double) Float.parseFloat(tokenValue));
             default:
-                return new Token(terminal.getId(), lineNumber, tokenValue);
+                return new Token(terminal, lineNumber, tokenValue);
         }
     }
 }

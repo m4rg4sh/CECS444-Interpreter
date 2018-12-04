@@ -1,5 +1,7 @@
 package Tokens;
 
+import Symbols.Symbol;
+
 /**
  * Subclass of Token which represents a Float.
  * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
@@ -11,8 +13,8 @@ public class FloatToken extends Token {
      */
     private double value;
 
-    public FloatToken(int id, int lineNumber, String name, double value) {
-        super(id,lineNumber, name);
+    public FloatToken(Symbol symbol, int lineNumber, String name, double value) {
+        super(symbol,lineNumber, name);
         this.value = value;
     }
 
