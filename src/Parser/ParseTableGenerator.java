@@ -105,8 +105,8 @@ public class ParseTableGenerator {
         //Varlist = Varitem semi Varlist
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.VARITEM, Terminal.SEMI, NonTerminal.VARLIST);
-        fillMultipleCells(parseTable, NonTerminal.VARLIST, rhs, ruleNumber++, Terminal.INT,
-                Terminal.FLOAT, Terminal.STRING, Terminal.ID, Terminal.KCLASS);
+        fillMultipleCells(parseTable, NonTerminal.VARLIST, rhs, ruleNumber++, Terminal.KINT,
+                Terminal.KFLOAT, Terminal.KSTRING, Terminal.ID, Terminal.KCLASS);
         
         //Varlist = eps
         rhs = new ArrayList<>();
@@ -116,8 +116,8 @@ public class ParseTableGenerator {
         //Varitem = Vardecl VaritemT
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.VARDECL, NonTerminal.VARITEMT);
-        fillMultipleCells(parseTable, NonTerminal.VARITEM, rhs, ruleNumber++, Terminal.INT,
-                Terminal.FLOAT, Terminal.STRING, Terminal.ID, Terminal.KCLASS);
+        fillMultipleCells(parseTable, NonTerminal.VARITEM, rhs, ruleNumber++, Terminal.KINT,
+                Terminal.KFLOAT, Terminal.KSTRING, Terminal.ID, Terminal.KCLASS);
         
         //Varitem = Classdecl
         rhs = new ArrayList<>();
@@ -137,13 +137,13 @@ public class ParseTableGenerator {
         //Vardecl = Simplekind Varspec
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.SIMPLEKIND, NonTerminal.VARSPEC);
-        fillMultipleCells(parseTable, NonTerminal.VARDECL, rhs, ruleNumber++, Terminal.INT,
-                Terminal.FLOAT, Terminal.STRING, Terminal.ID);
+        fillMultipleCells(parseTable, NonTerminal.VARDECL, rhs, ruleNumber++, Terminal.KINT,
+                Terminal.KFLOAT, Terminal.KSTRING, Terminal.ID);
         
         //Simplekind = Basekind
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.BASEKIND);
-        fillMultipleCells(parseTable, NonTerminal.SIMPLEKIND, rhs, ruleNumber++, Terminal.INT, Terminal.FLOAT, Terminal.STRING);
+        fillMultipleCells(parseTable, NonTerminal.SIMPLEKIND, rhs, ruleNumber++, Terminal.KINT, Terminal.KFLOAT, Terminal.KSTRING);
         
         //Simplekind = Classid
         rhs = new ArrayList<>();
@@ -152,18 +152,18 @@ public class ParseTableGenerator {
     
         //Basekind = int
         rhs = new ArrayList<>();
-        fillRule(rhs, Terminal.INT);
-        parseTable.put(new Prediction(NonTerminal.BASEKIND,Terminal.INT), rhs, ruleNumber++);
+        fillRule(rhs, Terminal.KINT);
+        parseTable.put(new Prediction(NonTerminal.BASEKIND,Terminal.KINT), rhs, ruleNumber++);
         
         //Basekind = float
         rhs = new ArrayList<>();
-        fillRule(rhs, Terminal.FLOAT);
-        parseTable.put(new Prediction(NonTerminal.BASEKIND,Terminal.FLOAT), rhs, ruleNumber++);
+        fillRule(rhs, Terminal.KFLOAT);
+        parseTable.put(new Prediction(NonTerminal.BASEKIND,Terminal.KFLOAT), rhs, ruleNumber++);
         
         //Basekind = string
         rhs = new ArrayList<>();
-        fillRule(rhs, Terminal.STRING);
-        parseTable.put(new Prediction(NonTerminal.BASEKIND,Terminal.STRING), rhs, ruleNumber++);
+        fillRule(rhs, Terminal.KSTRING);
+        parseTable.put(new Prediction(NonTerminal.BASEKIND,Terminal.KSTRING), rhs, ruleNumber++);
     
         //Classid = id
         rhs = new ArrayList<>();
@@ -187,8 +187,7 @@ public class ParseTableGenerator {
         
         //VarspecT = eps
         rhs = new ArrayList<>();
-        
-        fillMultipleCells(parseTable, NonTerminal.VARSPECT, rhs, ruleNumber++, Terminal.EQUAL, Terminal.COMMA);
+        fillMultipleCells(parseTable, NonTerminal.VARSPECT, rhs, ruleNumber++, Terminal.EQUAL, Terminal.SEMI);
     
         //Varid = id
         rhs = new ArrayList<>();
@@ -359,9 +358,10 @@ public class ParseTableGenerator {
         
         //Fcndefs = eps
         rhs = new ArrayList<>();
-        
-        parseTable.put(new Prediction(NonTerminal.FCNDEFS,Terminal.KMAIN), rhs, ruleNumber++);
-        
+
+        fillMultipleCells(parseTable, NonTerminal.FCNDEFS, rhs, ruleNumber++, Terminal.ID, Terminal.ASTER, Terminal.KMAIN,
+                 Terminal.KIF, Terminal.KWHILE, Terminal.KPRINT, Terminal.KRETURN, Terminal.BRACE2);
+
         //Fcndef = Fcnheader BBlock
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.FCNHEADER, NonTerminal.BBLOCK);
@@ -380,8 +380,8 @@ public class ParseTableGenerator {
         //Retkind = Simplekind
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.SIMPLEKIND);
-        fillMultipleCells(parseTable, NonTerminal.RETKIND, rhs, ruleNumber++, Terminal.INT,
-                Terminal.FLOAT, Terminal.STRING, Terminal.ID);
+        fillMultipleCells(parseTable, NonTerminal.RETKIND, rhs, ruleNumber++, Terminal.KINT,
+                Terminal.KFLOAT, Terminal.KSTRING);
         
         //PParmlist = parens1 PParmlistT
         rhs = new ArrayList<>();
@@ -648,12 +648,12 @@ public class ParseTableGenerator {
         fillRule(rhs, NonTerminal.DEREF_ID);
         parseTable.put(new Prediction(NonTerminal.FACTCHECK,Terminal.ASTER), rhs, ruleNumber++);
         
-        //Fact = Basekind
+        //Fact = RVAL
         rhs = new ArrayList<>();
-        fillRule(rhs, NonTerminal.BASEKIND);
+        fillRule(rhs, NonTerminal.RVAL);
         fillMultipleCells(parseTable, NonTerminal.FACT, rhs, ruleNumber++, Terminal.INT,
                 Terminal.FLOAT, Terminal.STRING);
-        
+
         //Fact = Addrof_id
         rhs = new ArrayList<>();
         fillRule(rhs, NonTerminal.ADDROF_ID);
@@ -761,6 +761,23 @@ public class ParseTableGenerator {
         rhs = new ArrayList<>();
         fillRule(rhs, Terminal.EQUAL, NonTerminal.EXPR);
         parseTable.put(new Prediction(NonTerminal.STMTT, Terminal.EQUAL), rhs, ruleNumber);
-        
+
+        //RVAL = INT
+        rhs = new ArrayList<>();
+        fillRule(rhs, Terminal.INT);
+        parseTable.put(new Prediction(NonTerminal.RVAL,Terminal.INT), rhs, ruleNumber++);
+
+
+        //RVAL = FLOAT
+        rhs = new ArrayList<>();
+        fillRule(rhs, Terminal.FLOAT);
+        parseTable.put(new Prediction(NonTerminal.RVAL,Terminal.FLOAT), rhs, ruleNumber++);
+
+
+        //RVAL = STRING
+        rhs = new ArrayList<>();
+        fillRule(rhs, Terminal.STRING);
+        parseTable.put(new Prediction(NonTerminal.RVAL,Terminal.STRING), rhs, ruleNumber++);
+
     }
 }

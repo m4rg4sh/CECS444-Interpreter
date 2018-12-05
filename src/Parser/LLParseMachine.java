@@ -9,6 +9,7 @@ import Tree.Ast.Node;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.LinkedTransferQueue;
 
 
 /**
@@ -51,8 +52,8 @@ public class LLParseMachine {
      */
     private void initializeStack() {
         stack = new Stack<>();
-        stack.push(new InnerNode(Terminal.EOF, 0));
-        stack.push(new InnerNode(START_SYMBOL, 1));
+        stack.push(new InnerNode(Terminal.EOF, 0, null));
+        stack.push(new InnerNode(START_SYMBOL, 1,null));
         
         treeRoot = stack.peek();
     }
@@ -119,7 +120,7 @@ public class LLParseMachine {
             parentNode.setRule(rule.getId());
             List<Symbol> rhs = new ArrayList<>(rule.getRhs());
             Collections.reverse(rhs);
-            List<Node> newNodes = createNewTreeNodes(rhs);
+            List<Node> newNodes = createNewTreeNodes(rhs,parentNode);
             stack.addAll(newNodes);
             Collections.reverse(newNodes);
             parentNode.addChildren(newNodes);
@@ -134,14 +135,14 @@ public class LLParseMachine {
      * @param rhs list of symbols, the RHS of a rule
      * @return the list of tree nodes
      */
-    private List<Node> createNewTreeNodes(List<Symbol> rhs) {
+    private List<Node> createNewTreeNodes(List<Symbol> rhs, InnerNode parent) {
         List<Node> newNodes = new ArrayList<>();
         for (Symbol symbol : rhs) {
             Node newNode;
             if (symbol instanceof Terminal) {
-                newNode = new LeafNode(symbol);
+                newNode = new LeafNode(symbol,parent);
             } else {
-                newNode = new InnerNode(symbol);
+                newNode = new InnerNode(symbol,parent);
             }
             newNodes.add(newNode);
         }
@@ -201,8 +202,9 @@ public class LLParseMachine {
      */
     private void pst2ast (Node node) {
         if (node instanceof InnerNode) {
-            for (Node kid : ((InnerNode) node).getChildren()) {
-                pst2ast(kid);
+            Queue<Node> queue = new LinkedTransferQueue<>(((InnerNode) node).getChildren());
+            while (!queue.isEmpty()) {
+                pst2ast(queue.remove());
             }
             NodeConverter.convertNode((InnerNode) node);
         }

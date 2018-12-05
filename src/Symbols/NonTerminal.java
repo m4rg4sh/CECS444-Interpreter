@@ -83,7 +83,8 @@ public enum NonTerminal implements Symbol {
     STMTT(72),
     LVALT(73),
     PPEXPRST(74),
-    STRTNT(75);
+    STRTNT(75),
+    RVAL(76);
 
     private int id;
 

@@ -17,16 +17,16 @@ public class LeafNode extends Node {
      * @param symbol the symbol of the node
      * @param token the token which created this node
      */
-    public LeafNode(Symbol symbol, Token token) {
-        super(symbol,token);
+    public LeafNode(Symbol symbol, Token token, InnerNode parent) {
+        super(symbol,token,parent);
     }
 
     /**
      * Constructor without token. Used while the token is still unknown.
      * @param symbol the symbol of the node
      */
-    public LeafNode(Symbol symbol) {
-        this(symbol, null);
+    public LeafNode(Symbol symbol, InnerNode parent) {
+        this(symbol, null, parent);
     }
 
     /**

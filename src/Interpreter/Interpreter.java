@@ -14,12 +14,16 @@ public class Interpreter {
         } catch (ParserException e) {
             e.printStackTrace();
         }
-        new Interpreter(parser.getAst()).createScopes();
-
+        new Interpreter(parser.getAst()).interpret();
     }
 
     private Interpreter(Node ast) {
         this.ast = ast;
+    }
+
+    private void interpret() {
+        createScopes();
+        EvaluationFunctions.evaluateCode(ast);
     }
 
     private void createScopes() {

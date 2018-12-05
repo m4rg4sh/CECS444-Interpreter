@@ -2,6 +2,7 @@ package Tree.Ast;
 
 import Symbols.Symbol;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,8 +25,8 @@ public class InnerNode extends Node {
      * @param symbol The symbol to be stored
      * @param ruleID The rule id that created this node
      */
-    public InnerNode(Symbol symbol, int ruleID) {
-        super(symbol);
+    public InnerNode(Symbol symbol, int ruleID, InnerNode parent) {
+        super(symbol,parent);
         this.rule = ruleID;
         children = new ArrayList<>();
         isEpsilon = false;
@@ -35,8 +36,8 @@ public class InnerNode extends Node {
      * Constructor without rule ID if it's not available
      * @param symbol The symbol to be stored
      */
-    public InnerNode(Symbol symbol) {
-        this(symbol, 0);
+    public InnerNode(Symbol symbol,InnerNode parent) {
+        this(symbol, 0,parent);
     }
 
     /**
@@ -54,12 +55,8 @@ public class InnerNode extends Node {
         return isEpsilon;
     }
 
-    /**
-     * Adds a additional child to the node
-     * @param child the child to be added
-     */
-    public void addChild(Node child) {
-        children.add(child);
+    public void addChild(Node child, int index) {
+        children.add(index, child);
     }
 
     /**
@@ -93,6 +90,8 @@ public class InnerNode extends Node {
         children.remove(child);
     }
 
+    public void removeChild(int index) {children.remove(index);}
+
     /**
      * Sets the rule id used to build the children of this node
      * @param id the rule id
@@ -115,18 +114,28 @@ public class InnerNode extends Node {
         return children;
     }
 
+    public void injectChildren(List<Node> newChildren, Node replacedChild) {
+        int position = children.indexOf(replacedChild);
+        for (Node c : newChildren) {
+            children.add(position++, c);
+        }
+        children.remove(replacedChild);
+    }
+
     /**
      * Copied the contents ("guts") of a different tree node into this one
      * @param sourceNode
      */
     public void copyFrom(Node sourceNode) {
-        setSymbol(sourceNode.getSymbol());
+        //TODO maybe revert this...
+        //setSymbol(sourceNode.getSymbol());
         if (sourceNode.getToken() != null) {
             setToken(sourceNode.getToken());
         }
         if (sourceNode instanceof InnerNode) {
             children.addAll(((InnerNode) sourceNode).getChildren());
         }
+        parent = sourceNode.getParent();
     }
 
     /**

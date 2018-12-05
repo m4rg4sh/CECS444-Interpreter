@@ -16,21 +16,30 @@ public abstract class Node {
     private Optional<Token> token;
     private GeneralSctNode scope;
     private int symtabIndex;
+    protected InnerNode parent;
 
+    public Node(Symbol symbol, Token token, InnerNode parent) {
+        this.symbol = symbol;
+        this.scope = null;
+        symtabIndex = -1;
+        if (null != token) {
+            this.token = Optional.of(token);
+        } else {
+            this.token = Optional.empty();
+        }
+        this.parent = parent;
+    }
     /**
      * Constructor
      * @param symbol the symbol of the node
      * @param token the token that created the node
      */
     public Node(Symbol symbol, Token token) {
-        this.symbol = symbol;
-        this.scope = null;
-        symtabIndex = -1;
-        if (null != token) {
-        this.token = Optional.of(token);
-        } else {
-            this.token = Optional.empty();
-        }
+        this(symbol,token,null);
+    }
+
+    public Node(Symbol symbol, InnerNode parent) {
+        this(symbol,null,parent);
     }
 
     /**
@@ -38,10 +47,7 @@ public abstract class Node {
      * @param symbol the symbol of the node
      */
     public Node(Symbol symbol) {
-        this.symbol = symbol;
-        this.scope = null;
-        symtabIndex = -1;
-        this.token = Optional.empty();
+        this(symbol,null,null);
     }
 
     /**
@@ -103,5 +109,9 @@ public abstract class Node {
      */
     public boolean hasScope() {
         return scope != null;
+    }
+
+    public InnerNode getParent() {
+        return parent;
     }
 }

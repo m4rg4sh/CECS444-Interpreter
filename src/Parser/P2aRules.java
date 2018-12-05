@@ -1,5 +1,7 @@
 package Parser;
 
+
+import Symbols.Terminal;
 import Tree.Ast.InnerNode;
 import Tree.Ast.Node;
 
@@ -20,22 +22,34 @@ public class P2aRules {
     // Pgm = kwdprog Vargroup Fcndefs Main
     public static void rule1(InnerNode node) {
         removeEpsilonKids(node);
+        //new root is always the kwdprog
         hoistKid(0,node);
     }
 
     // Main = kwdmain BBlock
     public static void rule2(InnerNode node) {
+        //new root is always kwdmain
+        removeEpsilonKids(node);
         hoistKid(0,node);
     }
 
     // BBlock = brace1 Vargroup Stmts brace2
     public static void rule3(InnerNode node) {
+        //we can remove the braces and just replace this node with all the kid nodes on the same level
         removeEpsilonKids(node);
-        hoistKid(0,node);
+        node.removeChild(0);
+        node.removeChild(node.getChildCount()-1);
+        if (node.getChildCount() == 0) {
+            node.setEpsilon(true);
+        } else {
+            InnerNode parent = node.getParent();
+            parent.injectChildren(node.getChildren(), node);
+        }
     }
 
     // Vargroup = kwdvars PPvarlist
     public static void rule4(InnerNode node) {
+        //kwdvar is always the new root
         hoistKid(0, node);
     }
 
@@ -47,13 +61,22 @@ public class P2aRules {
     // PPvarlist = parens1 Varlist parens2
     public static void rule6(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0, node);
+        node.removeChild(node.getChildCount()-1);
+        if (node.getChildCount() == 0) {
+            node.setEpsilon(true);
+        } else {
+            hoistKid(0, node);
+        }
     }
 
     // Varlist = Varitem semi Varlist
     public static void rule7(InnerNode node) {
+        // remove the semi and move all children up to the parent
         removeEpsilonKids(node);
-        hoistKid(1, node);
+        node.removeChild(1);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
+        //hoistKid(1, node);
     }
 
     // Varlist = eps
@@ -64,7 +87,12 @@ public class P2aRules {
     // Varitem = Vardecl VaritemT
     public static void rule9(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0, node);
+        //If there is a equals, we need to hoist it. otherwise we just replace the node
+        if (node.getChildCount() == 2) {
+            hoistKid(1, node);
+        } else {
+            hoistKid(0,node);
+        }
     }
 
     // Varitem = Classdecl
@@ -146,6 +174,7 @@ public class P2aRules {
 
     // KKint = bracket1 int bracket2
     public static void rule25(InnerNode node) {
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0, node);
     }
 
@@ -164,8 +193,7 @@ public class P2aRules {
         removeEpsilonKids(node); // expr can be eps
         if (node.getChildCount()==0){
             node.setEpsilon(true);
-        }
-        else{
+        } else {
             hoistKid(0, node);
         }
     }
@@ -183,12 +211,13 @@ public class P2aRules {
     // BBexprsT = Exprlist brace2
     public static void rule31(InnerNode node) {
         removeEpsilonKids(node);
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0, node);
     }
 
     // BBexprsT = brace2
     public static void rule32(InnerNode node) {
-        hoistKid(0, node);
+        node.setEpsilon(true);
     }
 
     // Exprlist = Expr Moreexprs
@@ -204,8 +233,11 @@ public class P2aRules {
 
     // Moreexprs = comma Exprlist
     public static void rule34(InnerNode node) {
+        // we can just remove the comma and move the expressions up to the parent
         removeEpsilonKids(node);
-        hoistKid(0, node);
+        node.removeChild(0);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // Moreexprs = eps
@@ -228,11 +260,13 @@ public class P2aRules {
     public static void rule38(InnerNode node) {
         removeEpsilonKids(node);
         hoistKid(0, node);
+        //TODO check this
     }
 
     // BBClassitems = brace1 Classitems brace2
     public static void rule39(InnerNode node) {
         removeEpsilonKids(node);
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0, node);
     }
 
@@ -330,6 +364,12 @@ public class P2aRules {
     public static void rule54(InnerNode node) {
         removeEpsilonKids(node);
         hoistKid(0, node);
+        if (node.getChildCount() == 2) {
+            InnerNode parent = node.getParent();
+            parent.injectChildren(node.getChildren(),node);
+        } else {
+            hoistKid(0,node);
+        }
     }
 
     // Fcndefs = eps
@@ -358,17 +398,19 @@ public class P2aRules {
     }
     // PParmlist = parens1 PParmlistT
     public static void rule60(InnerNode node) {
+        removeEpsilonKids(node);
         hoistKid(0, node);
     }
 
     // PParmlistT = Varspecs parens2
     public static void rule61(InnerNode node) {
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0, node);
     }
 
     // PParmlistT = parens2
     public static void rule62(InnerNode node) {
-        hoistKid(0, node);
+        node.setEpsilon(true);
     }
 
     // Varspecs = Varspec More_varspecs
@@ -389,13 +431,21 @@ public class P2aRules {
 
     // PPonly = parens1 parens2
     public static void rule66(InnerNode node) {
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0, node);
     }
 
     // Stmts = Stmt semi Stmts
     public static void rule67(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(1, node);
+        node.removeChild(1);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
+
+        /*removeEpsilonKids(node);
+        int lastChild = node.getChildCount() - 1;
+        hoistKid(lastChild, node);*/
+        //TODO this should actually be replaced with all the stmt children (on the same level)
     }
 
     // Stmts = eps
@@ -441,7 +491,11 @@ public class P2aRules {
 
     // Stmt = id StmtT
     public static void rule76(InnerNode node) {
-        hoistKid(0, node);
+        if (node.getChild(1).getToken().getId() == Terminal.EQUAL.getId()) {
+            hoistKid(1, node);
+        } else {
+            hoistKid(0, node);
+        }
     }
 
     // StmtT = LvalT StmtT
@@ -487,6 +541,7 @@ public class P2aRules {
     // KKexpr = bracket1 Expr bracket2
     public static void rule84(InnerNode node) {
         removeEpsilonKids(node);
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0, node);
     }
 
@@ -503,12 +558,13 @@ public class P2aRules {
     // PPexprsT = Exprlist parens2
     public static void rule87(InnerNode node) {
         removeEpsilonKids(node); // exprlist can be eps by association
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0, node);
     }
 
     // PPexprsT = parens2
     public static void rule88(InnerNode node) {
-        hoistKid(0, node);
+        node.setEpsilon(true);
     }
 
     // Stif = kwdif PPexpr BBlock Elsepart
@@ -568,6 +624,7 @@ public class P2aRules {
     // PPexpr = parens1 Expr parens2
     public static void rule98(InnerNode node) {
         removeEpsilonKids(node);
+        node.removeChild(node.getChildCount()-1);
         hoistKid(0,node);
 
     }
@@ -584,9 +641,10 @@ public class P2aRules {
         removeEpsilonKids(node);// eps by association
         if (node.getChildCount()==0){
             node.setEpsilon(true);
-        }
-        else{
+        } else if (node.getChildCount()== 1) {
             hoistKid(0, node);
+        } else {
+            hoistKid(1, node);
         }
     }
 
@@ -598,7 +656,16 @@ public class P2aRules {
     // Rterm = Opadd Term Rterm
     public static void rule102(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0,node);
+        if (node.getChildCount()==2) {
+            //Rterm -> eps, only Opadd and Term left
+            hoistKid(0,node);
+        } else {
+            //Term and Rterm are present
+            //we need to hoist $1 and move $2 down to $3
+            ((InnerNode)node.getChild(2)).addChild(node.getChild(1),0);
+            node.removeChild(1);
+            hoistKid(0,node);
+        }
     }
 
     // Rterm = Term Rterm
@@ -606,9 +673,10 @@ public class P2aRules {
         removeEpsilonKids(node);// eps by association
         if (node.getChildCount()==0){
             node.setEpsilon(true);
-        }
-        else{
+        } else if (node.getChildCount()== 1) {
             hoistKid(0, node);
+        } else {
+            hoistKid(1, node);
         }
     }
 
@@ -620,7 +688,11 @@ public class P2aRules {
     // Term = Opmul Factcheck Term
     public static void rule105(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0,node);
+        if (node.getChildCount() == 0) {
+            node.setEpsilon(true);
+        } else {
+            hoistKid(0, node);
+        }
 
     }
 
@@ -638,7 +710,12 @@ public class P2aRules {
 
     // Factcheck = Fact
     public static void rule108(InnerNode node) {
-        hoistKid(0,node);
+        removeEpsilonKids(node);
+        if (node.getChildCount() == 0) {
+         node.setEpsilon(true);
+        } else {
+            hoistKid(0, node);
+        }
     }
 
     // Factcheck = Deref_id
@@ -757,6 +834,24 @@ public class P2aRules {
 
     // StmtT = equal Expr
     public static void rule131(InnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
+    }
+
+    //RVAL = INT
+    public static void rule132(InnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
+    }
+
+    //RVAL = FLOAT
+    public static void rule133(InnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
+    }
+
+    // //RVAL = STRING
+    public static void rule134(InnerNode node) {
         removeEpsilonKids(node);
         hoistKid(0,node);
     }

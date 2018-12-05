@@ -408,6 +408,15 @@ public class NodeConverter {
                 case 131:
                     P2aRules.rule131(node);
                     break;
+                case 132:
+                    P2aRules.rule131(node);
+                    break;
+                case 133:
+                    P2aRules.rule131(node);
+                    break;
+                case 134:
+                    P2aRules.rule131(node);
+                    break;
                 default:
                     throw new ParserException("Rule not implemented");
             }
