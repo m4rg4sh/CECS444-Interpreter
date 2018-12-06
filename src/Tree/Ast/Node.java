@@ -1,5 +1,6 @@
 package Tree.Ast;
 
+import Interpreter.Symtab.SymtabEntry;
 import Symbols.Symbol;
 import Tokens.Token;
 import Tree.Sct.GeneralSctNode;
@@ -113,5 +114,9 @@ public abstract class Node {
 
     public InnerNode getParent() {
         return parent;
+    }
+
+    public SymtabEntry getSymtabEntry() {
+        return scope.getSymtabEntry(symtabIndex);
     }
 }

@@ -6,6 +6,7 @@ import Tree.Ast.Node;
 
 public class Interpreter {
     private Node ast;
+    private SctBuilder sctBuilder;
 
     public static void main(String[] args) {
         LLParseMachine parser = new LLParseMachine();
@@ -24,10 +25,11 @@ public class Interpreter {
     private void interpret() {
         createScopes();
         EvaluationFunctions.evaluateCode(ast);
+        sctBuilder.printScopeTree();
     }
 
     private void createScopes() {
-        SctBuilder sctBuilder = new SctBuilder();
+        sctBuilder = new SctBuilder();
         sctBuilder.buildSct(ast);
         sctBuilder.printScopeTree();
     }

@@ -187,7 +187,7 @@ public class ParseTableGenerator {
         
         //VarspecT = eps
         rhs = new ArrayList<>();
-        fillMultipleCells(parseTable, NonTerminal.VARSPECT, rhs, ruleNumber++, Terminal.EQUAL, Terminal.SEMI);
+        fillMultipleCells(parseTable, NonTerminal.VARSPECT, rhs, ruleNumber++, Terminal.EQUAL, Terminal.SEMI, Terminal.PARENS2);
     
         //Varid = id
         rhs = new ArrayList<>();

@@ -20,7 +20,7 @@ public class TokenFactory {
             case INT:
                 return new IntToken(terminal, lineNumber, tokenValue, Integer.parseInt(tokenValue));
             case FLOAT:
-                return new FloatToken(terminal, lineNumber, tokenValue, (double) Float.parseFloat(tokenValue));
+                return new FloatToken(terminal, lineNumber, tokenValue, Double.parseDouble(tokenValue));
             default:
                 return new Token(terminal, lineNumber, tokenValue);
         }

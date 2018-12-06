@@ -18,6 +18,10 @@ public class IntToken extends Token {
         this.value = value;
     }
 
+    public Integer getValue() {
+        return value;
+    }
+
     /**
      * Converts the token to a string which is formatted correctly for PST/AST output
      * @return formatted string representation of the token

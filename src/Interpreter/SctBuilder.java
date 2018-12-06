@@ -1,5 +1,6 @@
 package Interpreter;
 
+import Symbols.NonTerminal;
 import Symbols.Terminal;
 import Interpreter.Symtab.SymtabEntry;
 import Tokens.Token;
@@ -35,7 +36,13 @@ public class SctBuilder {
             currentNode = currentNode.openChildScope(astNode);
             astNode.setScope(currentNode);
         } else if (isNewDeclaration(astNode)) {
-            astNode.setScope(currentNode,currentNode.addSymbol(astNode));
+            if (astNode.getSymbol() == NonTerminal.FCNID) {
+                GeneralSctNode parent = ((SctNode)currentNode).getParentNode();
+                int index = parent.addSymbol(astNode);
+                astNode.setScope(parent,index);
+            } else {
+                astNode.setScope(currentNode, currentNode.addSymbol(astNode));
+            }
         } else if (isIdentifier(astNode.getToken())) {
             GeneralSctNode scopeNode = currentNode.getScope(astNode.getToken());
             int index = scopeNode.indexOf(astNode.getToken());
@@ -46,7 +53,9 @@ public class SctBuilder {
     }
 
     private boolean isOpeningNode(Node node) {
-        return !node.hasScope() && node.getSymbol().createsScope();
+        int tokenIde = node.getToken().getId();
+        Terminal symbol = Terminal.valueOf(tokenIde);
+        return !node.hasScope() && symbol.createsScope();
     }
 
     private boolean isClosingNode(Node node) {
@@ -68,14 +77,29 @@ public class SctBuilder {
         GeneralSctNode printNode = rootNode;
         while (true) {
             int index = 0;
+            if (printNode instanceof SctNode) {
+                System.out.println("\nScope: " + ((SctNode)printNode).getOpeningNode().getToken().getCodeString());
+            } else {
+                System.out.println("\nScope: Global");
+            }
             for (SymtabEntry e : printNode) {
-                System.out.println("[" + index++ + "] | ID: " + e.getIdentifier() + " | Opened by: " + e.getIdNode().getToken().toTreeString());
+                System.out.println("[" + index++ + "] "
+                        + "| ID: " + e.getIdentifier()
+                        + " | Value: " + printValue(e.getValue()));
             }
             if (printNode.hasChild()) {
                 printNode = printNode.getChildNode();
             } else {
                 break;
             }
+        }
+    }
+
+    private String printValue(Object o) {
+        if (null == o) {
+            return "Null";
+        } else {
+            return o.toString();
         }
     }
 }

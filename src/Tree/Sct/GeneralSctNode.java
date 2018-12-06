@@ -1,6 +1,8 @@
 package Tree.Sct;
 
 import Interpreter.Symtab.SymtabEntry;
+import Tokens.FloatToken;
+import Tokens.IntToken;
 import Tokens.Token;
 import Tree.Ast.Node;
 
@@ -29,7 +31,7 @@ public abstract class GeneralSctNode implements Iterable<SymtabEntry>{
      * @return the index of the new entry
      */
     public int addSymbol(Node idNode) {
-        SymtabEntry newEntry = new SymtabEntry(idNode, idNode.getToken());
+        SymtabEntry newEntry = new SymtabEntry(idNode,idNode.getToken());
         symtab.add(newEntry);
         return symtab.indexOf(newEntry);
     }
@@ -86,6 +88,10 @@ public abstract class GeneralSctNode implements Iterable<SymtabEntry>{
     public int indexOf(Token token) {
         SymtabEntry testEntry = new SymtabEntry(token);
         return symtab.indexOf(testEntry);
+    }
+
+    public SymtabEntry getSymtabEntry(int index) {
+        return symtab.get(index);
     }
 
     /**

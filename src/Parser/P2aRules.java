@@ -62,11 +62,9 @@ public class P2aRules {
     public static void rule6(InnerNode node) {
         removeEpsilonKids(node);
         node.removeChild(node.getChildCount()-1);
-        if (node.getChildCount() == 0) {
-            node.setEpsilon(true);
-        } else {
-            hoistKid(0, node);
-        }
+        node.removeChild(0);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // Varlist = Varitem semi Varlist
@@ -113,7 +111,7 @@ public class P2aRules {
 
     // Vardecl = Simplekind Varspec
     public static void rule13(InnerNode node) {
-        hoistKid(0, node);
+        hoistKid(1, node);
     }
 
     // Simplekind = Basekind
@@ -834,24 +832,6 @@ public class P2aRules {
 
     // StmtT = equal Expr
     public static void rule131(InnerNode node) {
-        removeEpsilonKids(node);
-        hoistKid(0,node);
-    }
-
-    //RVAL = INT
-    public static void rule132(InnerNode node) {
-        removeEpsilonKids(node);
-        hoistKid(0,node);
-    }
-
-    //RVAL = FLOAT
-    public static void rule133(InnerNode node) {
-        removeEpsilonKids(node);
-        hoistKid(0,node);
-    }
-
-    // //RVAL = STRING
-    public static void rule134(InnerNode node) {
         removeEpsilonKids(node);
         hoistKid(0,node);
     }
