@@ -35,15 +35,12 @@ public class P2aRules {
 
     // BBlock = brace1 Vargroup Stmts brace2
     public static void rule3(InnerNode node) {
-        //we can remove the braces and just replace this node with all the kid nodes on the same level
         removeEpsilonKids(node);
-        node.removeChild(0);
         node.removeChild(node.getChildCount()-1);
         if (node.getChildCount() == 0) {
             node.setEpsilon(true);
         } else {
-            InnerNode parent = node.getParent();
-            parent.injectChildren(node.getChildren(), node);
+            hoistKid(0,node);
         }
     }
 
@@ -74,7 +71,6 @@ public class P2aRules {
         node.removeChild(1);
         InnerNode parent = node.getParent();
         parent.injectChildren(node.getChildren(),node);
-        //hoistKid(1, node);
     }
 
     // Varlist = eps
@@ -361,13 +357,8 @@ public class P2aRules {
     // Fcndefs = Fcndef Fcndefs
     public static void rule54(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0, node);
-        if (node.getChildCount() == 2) {
-            InnerNode parent = node.getParent();
-            parent.injectChildren(node.getChildren(),node);
-        } else {
-            hoistKid(0,node);
-        }
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // Fcndefs = eps
@@ -377,6 +368,8 @@ public class P2aRules {
 
     // Fcndef = Fcnheader BBlock
     public static void rule56(InnerNode node) {
+        //extract fcn keyword and hoist it?
+
         hoistKid(0, node);
     }
 
@@ -403,7 +396,8 @@ public class P2aRules {
     // PParmlistT = Varspecs parens2
     public static void rule61(InnerNode node) {
         node.removeChild(node.getChildCount()-1);
-        hoistKid(0, node);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // PParmlistT = parens2
@@ -414,12 +408,17 @@ public class P2aRules {
     // Varspecs = Varspec More_varspecs
     public static void rule63(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0, node);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // More_varspecs = comma Varspecs
     public static void rule64(InnerNode node) {
-        hoistKid(0, node);
+        // we can just remove the comma and move the varspecs up to the parent
+        removeEpsilonKids(node);
+        node.removeChild(0);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // More_varspecs = eps
@@ -439,11 +438,6 @@ public class P2aRules {
         node.removeChild(1);
         InnerNode parent = node.getParent();
         parent.injectChildren(node.getChildren(),node);
-
-        /*removeEpsilonKids(node);
-        int lastChild = node.getChildCount() - 1;
-        hoistKid(lastChild, node);*/
-        //TODO this should actually be replaced with all the stmt children (on the same level)
     }
 
     // Stmts = eps

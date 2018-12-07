@@ -133,7 +133,7 @@ public class InnerNode extends Node {
             setToken(sourceNode.getToken());
         }
         if (sourceNode instanceof InnerNode) {
-            children.addAll(((InnerNode) sourceNode).getChildren());
+            children.addAll(0,((InnerNode) sourceNode).getChildren());
         }
         parent = sourceNode.getParent();
     }
