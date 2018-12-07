@@ -36,13 +36,7 @@ public class SctBuilder {
             currentNode = currentNode.openChildScope(astNode);
             astNode.setScope(currentNode);
         } else if (isNewDeclaration(astNode)) {
-            if (astNode.getSymbol() == NonTerminal.FCNID) {
-                GeneralSctNode parent = ((SctNode)currentNode).getParentNode();
-                int index = parent.addSymbol(astNode);
-                astNode.setScope(parent,index);
-            } else {
-                astNode.setScope(currentNode, currentNode.addSymbol(astNode));
-            }
+            astNode.setScope(currentNode, currentNode.addSymbol(astNode));
         } else if (isIdentifier(astNode.getToken())) {
             GeneralSctNode scopeNode = currentNode.getScope(astNode.getToken());
             int index = scopeNode.indexOf(astNode.getToken());
