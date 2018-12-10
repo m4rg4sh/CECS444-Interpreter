@@ -2,6 +2,7 @@ package Interpreter;
 
 import Interpreter.Exceptions.InterpreterException;
 import Interpreter.Symtab.SymtabEntry;
+import Symbols.Terminal;
 import Tokens.FloatToken;
 import Tokens.IntToken;
 import Tree.Ast.InnerNode;
@@ -12,6 +13,8 @@ public class EvaluationFunctions {
 
     public static Object evaluateCode(Node astNode) {
         switch (astNode.getToken().getId()) { //check which ID to use
+            case 1: //COMMENT
+                return null;
             //TODO implement all the handlers
             case 2: //ID
                 return code2(astNode);
@@ -19,10 +22,34 @@ public class EvaluationFunctions {
                 return code3(astNode);
             case 4: //FLOAT
                 return code4(astNode);
+            case 5: //STRING
+                return code5(astNode);
+            case 6: //COMMA
+                //fallthrough
+            case 7: throwExeption(astNode);
+                    return null;
             case 10: //KPROG
                 return code10(astNode);
             case 11: //KMAIN
                 return code11(astNode);
+            case 12: //KFCN
+                return code12(astNode);
+            case 13: //KCLASS
+                return code13(astNode);
+            case 15: //KFLOAT
+                return code15(astNode);
+            case 16: //KINT
+                return code16(astNode);
+            case 17: //KSTRING
+                return code17(astNode);
+            case 18: //KIF
+                return code18(astNode);
+            case 19: //KELSEIF
+                return code19(astNode);
+            case 20: //KELSE
+                return code20(astNode);
+            case 21: //KWHILE
+                return code21(astNode);
             case 26: //KVAR
                 return code26(astNode);
             case 45: //EQUAL
@@ -32,6 +59,12 @@ public class EvaluationFunctions {
             default:
                 throw new UnsupportedOperationException();
         }
+    }
+
+    private static void throwExeption(Node astNode) {
+        String symbol = Terminal.valueOf(astNode.getToken().getId()).toString();
+        throw new InterpreterException("There should not be a " + symbol + " left by now, however there it is and" +
+                "now we don't know what to do with it");
     }
 
     private static Object code2(Node astNode) {
@@ -51,6 +84,12 @@ public class EvaluationFunctions {
         return token.getValue();
     }
 
+    private static Object code5(Node astNode) {
+        //just return the value
+        return astNode.getToken().getCodeString();
+    }
+
+
     private static Object code10(Node astNode) {
         //kprog doesn't do anything, just evaluate the children
         InnerNode node = (InnerNode) astNode;
@@ -66,6 +105,62 @@ public class EvaluationFunctions {
             evaluateCode(child);
         }
         return null;
+    }
+
+    private static Object code12 (Node astNode) {
+        //TODO implement KFCN
+        //first child is the ID
+        //second child is the param list
+        //third child is return type (which we can ignore for now)
+        //fourth child is the code block that we need to execute when the function gets called
+
+        //basic idea: we can link the value variable in the scope tree back to the AST node of the code block
+        //this way we can call the interpreter on it
+        //before the function call we need to somehow initialize the variables and afterwards we might want to reset them
+        return null;
+    }
+
+    private static Object code13 (Node astNode) {
+        //TODO implement KCLASS
+        throw new UnsupportedOperationException();
+    }
+
+    private static Object code15 (Node astNode) {
+        //TODO implement KFLOAT
+        //if we don't do typechecking we can ignore this
+        throw new UnsupportedOperationException();
+    }
+
+    private static Object code16 (Node astNode) {
+        //TODO implement KINT
+        //if we don't do typechecking we can ignore this
+        throw new UnsupportedOperationException();
+    }
+
+    private static Object code17 (Node astNode) {
+        //TODO implement KSTRING
+        //if we don't do typechecking we can ignore this
+        throw new UnsupportedOperationException();
+    }
+
+    private static Object code18 (Node astNode) {
+        //TODO implement KIF
+        throw new UnsupportedOperationException();
+    }
+
+    private static Object code19 (Node astNode) {
+        //TODO implement KELSEIF
+        throw new UnsupportedOperationException();
+    }
+
+    private static Object code20 (Node astNode) {
+        //TODO implement KELSE
+        throw new UnsupportedOperationException();
+    }
+
+    private static Object code21 (Node astNode) {
+        //TODO implement KWHILE
+        throw new UnsupportedOperationException();
     }
 
     private static Object code26(Node astNode) {

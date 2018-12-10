@@ -217,12 +217,8 @@ public class P2aRules {
     // Exprlist = Expr Moreexprs
     public static void rule33(InnerNode node) {
         removeEpsilonKids(node); // both can be eps
-        if (node.getChildCount()==0){
-            node.setEpsilon(true);
-        }
-        else{
-            hoistKid(0, node);
-        }
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // Moreexprs = comma Exprlist
@@ -551,7 +547,8 @@ public class P2aRules {
     public static void rule87(InnerNode node) {
         removeEpsilonKids(node); // exprlist can be eps by association
         node.removeChild(node.getChildCount()-1);
-        hoistKid(0, node);
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // PPexprsT = parens2
@@ -631,12 +628,11 @@ public class P2aRules {
     // Expr = Rterm Expr
     public static void rule100(InnerNode node) {
         removeEpsilonKids(node);// eps by association
-        if (node.getChildCount()==0){
-            node.setEpsilon(true);
-        } else if (node.getChildCount()== 1) {
-            hoistKid(0, node);
+        if (node.getChildCount() > 1 && node.getChild(1).getToken().getId() == Terminal.PLUS.getId()) {
+            hoistKid(1,node);
         } else {
-            hoistKid(1, node);
+            InnerNode parent = node.getParent();
+            parent.injectChildren(node.getChildren(),node);
         }
     }
 
@@ -663,13 +659,8 @@ public class P2aRules {
     // Rterm = Term Rterm
     public static void rule103(InnerNode node) {
         removeEpsilonKids(node);// eps by association
-        if (node.getChildCount()==0){
-            node.setEpsilon(true);
-        } else if (node.getChildCount()== 1) {
-            hoistKid(0, node);
-        } else {
-            hoistKid(1, node);
-        }
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // Rterm = eps
@@ -691,8 +682,8 @@ public class P2aRules {
     // Term = Fact Term
     public static void rule106(InnerNode node) {
         removeEpsilonKids(node);
-        hoistKid(0,node);
-
+        InnerNode parent = node.getParent();
+        parent.injectChildren(node.getChildren(),node);
     }
 
     // Term = eps
