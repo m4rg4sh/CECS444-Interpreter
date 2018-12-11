@@ -760,7 +760,7 @@ public class ParseTableGenerator {
         //StmtT = equal Expr
         rhs = new ArrayList<>();
         fillRule(rhs, Terminal.EQUAL, NonTerminal.EXPR);
-        parseTable.put(new Prediction(NonTerminal.STMTT, Terminal.EQUAL), rhs, ruleNumber);
+        parseTable.put(new Prediction(NonTerminal.STMTT, Terminal.EQUAL), rhs, ruleNumber++);
 
         //RVAL = INT
         rhs = new ArrayList<>();

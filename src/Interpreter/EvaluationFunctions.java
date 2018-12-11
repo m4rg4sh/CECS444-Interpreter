@@ -52,6 +52,8 @@ public class EvaluationFunctions {
                 return code21(astNode);
             case 26: //KVAR
                 return code26(astNode);
+            case 33: //Brace1
+                return code33(astNode);
             case 45: //EQUAL
                 return code45(astNode);
             case 47: //PLUS
@@ -117,6 +119,7 @@ public class EvaluationFunctions {
         //basic idea: we can link the value variable in the scope tree back to the AST node of the code block
         //this way we can call the interpreter on it
         //before the function call we need to somehow initialize the variables and afterwards we might want to reset them
+
         return null;
     }
 
@@ -171,6 +174,16 @@ public class EvaluationFunctions {
             }
         } else {
             throw new InterpreterException("kwdvars need to have a child node, but none found");
+        }
+        return null;
+    }
+
+    private static Object code33(Node astNode) {
+        //just execute whatever comes next if there even is something
+        if (astNode instanceof InnerNode) {
+            for (Node n : ((InnerNode) astNode).getChildren()) {
+                evaluateCode(n);
+            }
         }
         return null;
     }

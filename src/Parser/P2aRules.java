@@ -821,6 +821,24 @@ public class P2aRules {
         hoistKid(0,node);
     }
 
+    // RVAL = INT
+    public static void rule132(InnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
+    }
+
+    // RVAL = FLOAT
+    public static void rule133(InnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
+    }
+
+    // RVAL = STRING
+    public static void rule134(InnerNode node) {
+        removeEpsilonKids(node);
+        hoistKid(0,node);
+    }
+
     private static void removeEpsilonKids(InnerNode node) {
         node.getChildren().removeIf(Node::isEpsilon);
     }

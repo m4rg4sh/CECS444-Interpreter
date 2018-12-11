@@ -127,13 +127,14 @@ public class InnerNode extends Node {
      * @param sourceNode
      */
     public void copyFrom(Node sourceNode) {
+        int index = children.indexOf(sourceNode);
         //TODO maybe revert this...
         //setSymbol(sourceNode.getSymbol());
         if (sourceNode.getToken() != null) {
             setToken(sourceNode.getToken());
         }
         if (sourceNode instanceof InnerNode) {
-            children.addAll(0,((InnerNode) sourceNode).getChildren());
+            children.addAll(index,((InnerNode) sourceNode).getChildren());
         }
         parent = sourceNode.getParent();
     }
