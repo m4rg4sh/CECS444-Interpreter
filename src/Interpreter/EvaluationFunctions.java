@@ -26,7 +26,7 @@ public class EvaluationFunctions {
                 return code5(astNode);
             case 6: //COMMA
                 //fallthrough
-            case 7: throwExeption(astNode);
+            case 7: throwException(astNode);
                     return null;
             case 10: //KPROG
                 return code10(astNode);
@@ -50,10 +50,16 @@ public class EvaluationFunctions {
                 return code20(astNode);
             case 21: //KWHILE
                 return code21(astNode);
+            case 23: //KPRINT
+                return code23(astNode);
             case 26: //KVAR
                 return code26(astNode);
+            case 31: //Angle1
+                return code31(astNode);
             case 33: //Brace1
                 return code33(astNode);
+            case 37: //Paren1
+                return code37(astNode);
             case 45: //EQUAL
                 return code45(astNode);
             case 47: //PLUS
@@ -63,7 +69,7 @@ public class EvaluationFunctions {
         }
     }
 
-    private static void throwExeption(Node astNode) {
+    private static void throwException(Node astNode) {
         String symbol = Terminal.valueOf(astNode.getToken().getId()).toString();
         throw new InterpreterException("There should not be a " + symbol + " left by now, however there it is and" +
                 "now we don't know what to do with it");
@@ -162,8 +168,25 @@ public class EvaluationFunctions {
     }
 
     private static Object code21 (Node astNode) {
-        //TODO implement KWHILE
-        throw new UnsupportedOperationException();
+        // evaluate child 0 (condition)
+        // if true, execute child 1, else return
+        while ((Boolean) evaluateCode(((InnerNode) astNode).getChild(0))) {
+            evaluateCode(((InnerNode)astNode).getChild(1));
+        }
+        return null;
+    }
+
+    private static Object code23(Node astNode) {
+        if (astNode instanceof InnerNode) {
+            for (Node n : ((InnerNode) astNode).getChildren()) {
+                Object item = evaluateCode(n);
+                if (item instanceof SymtabEntry) {
+                    item = ((SymtabEntry) item).getValue();
+                }
+                System.out.print(item);
+            }
+        }
+        return null;
     }
 
     private static Object code26(Node astNode) {
@@ -178,7 +201,45 @@ public class EvaluationFunctions {
         return null;
     }
 
+    private static Object code31(Node astNode) {
+        InnerNode node = (InnerNode) astNode;
+
+        //evaluate both kids against each other
+
+        //get left child and unbox if it's an ID
+        Object left = evaluateCode(node.getChild(0));
+        if (left instanceof SymtabEntry) {
+            left = ((SymtabEntry) left).getValue();
+        }
+        //get right child and unbox if it's an ID
+        Object right = evaluateCode(node.getChild(1));
+        if (right instanceof SymtabEntry) {
+            right = ((SymtabEntry) right).getValue();
+        }
+
+        //add them together with the correct precision
+        if (left instanceof Double && right instanceof Double) {
+            return (Double) left < (Double) right;
+        } else if (left instanceof Double) {
+            return (Double) left < (Integer) right;
+        } else if (right instanceof Double) {
+            return (Integer) left < (Double) right;
+        } else {
+            return (Integer)left < (Integer) right;
+        }
+    }
+
     private static Object code33(Node astNode) {
+        //just execute whatever comes next if there even is something
+        if (astNode instanceof InnerNode) {
+            for (Node n : ((InnerNode) astNode).getChildren()) {
+                evaluateCode(n);
+            }
+        }
+        return null;
+    }
+
+    private static Object code37(Node astNode) {
         //just execute whatever comes next if there even is something
         if (astNode instanceof InnerNode) {
             for (Node n : ((InnerNode) astNode).getChildren()) {

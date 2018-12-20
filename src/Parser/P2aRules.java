@@ -540,6 +540,7 @@ public class P2aRules {
 
     // PPexprs = parens1 PPexprsT
     public static void rule86(InnerNode node) {
+        node.removeChild(0);
         hoistKid(0, node);
     }
 
@@ -613,6 +614,7 @@ public class P2aRules {
     // PPexpr = parens1 Expr parens2
     public static void rule98(InnerNode node) {
         removeEpsilonKids(node);
+        node.removeChild(0);
         node.removeChild(node.getChildCount()-1);
         hoistKid(0,node);
 
@@ -628,7 +630,15 @@ public class P2aRules {
     // Expr = Rterm Expr
     public static void rule100(InnerNode node) {
         removeEpsilonKids(node);// eps by association
-        if (node.getChildCount() > 1 && node.getChild(1).getToken().getId() == Terminal.PLUS.getId()) {
+        if (node.getChildCount() > 1 &&
+                (node.getChild(1).getToken().getId() == Terminal.PLUS.getId()
+                        || node.getChild(1).getToken().getId() == Terminal.ANGLE1.getId()
+                        || node.getChild(1).getToken().getId() == Terminal.ANGLE2.getId()
+                        || node.getChild(1).getToken().getId() == Terminal.ASTER.getId()
+                        || node.getChild(1).getToken().getId() == Terminal.EQUAL.getId()
+                        || node.getChild(1).getToken().getId() == Terminal.MINUS.getId()
+                )
+        ) {
             hoistKid(1,node);
         } else {
             InnerNode parent = node.getParent();
