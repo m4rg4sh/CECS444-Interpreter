@@ -1,6 +1,7 @@
 package Parser;
 
 
+import Symbols.NonTerminal;
 import Symbols.Terminal;
 import Tree.Ast.InnerNode;
 import Tree.Ast.Node;
@@ -637,6 +638,7 @@ public class P2aRules {
                         || node.getChild(1).getToken().getId() == Terminal.ASTER.getId()
                         || node.getChild(1).getToken().getId() == Terminal.EQUAL.getId()
                         || node.getChild(1).getToken().getId() == Terminal.MINUS.getId()
+                        || node.getChild(1).getToken().getId() == Terminal.SLASH.getId()
                 )
         ) {
             hoistKid(1,node);
@@ -681,12 +683,16 @@ public class P2aRules {
     // Term = Opmul Factcheck Term
     public static void rule105(InnerNode node) {
         removeEpsilonKids(node);
-        if (node.getChildCount() == 0) {
-            node.setEpsilon(true);
+        if (node.getChildCount()==2) {
+            //Rterm -> eps, only Opmul and Term left
+            hoistKid(0,node);
         } else {
-            hoistKid(0, node);
+            //Term and Rterm are present
+            //we need to hoist $1 and move $2 down to $3
+            ((InnerNode)node.getChild(2)).addChild(node.getChild(1),0);
+            node.removeChild(1);
+            hoistKid(0,node);
         }
-
     }
 
     // Term = Fact Term
@@ -820,7 +826,7 @@ public class P2aRules {
         hoistKid(0,node);
     }
 
-    // Opmul = caret
+    // something = caret
     public static void rule130(InnerNode node) {
         hoistKid(0,node);
     }

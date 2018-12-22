@@ -8,6 +8,8 @@ import Tokens.IntToken;
 import Tree.Ast.InnerNode;
 import Tree.Ast.Node;
 
+import java.nio.charset.StandardCharsets;
+
 
 public class EvaluationFunctions {
 
@@ -60,6 +62,8 @@ public class EvaluationFunctions {
                 return code33(astNode);
             case 37: //Paren1
                 return code37(astNode);
+            case 41: //Asterisk
+                return code41(astNode);
             case 45: //EQUAL
                 return code45(astNode);
             case 47: //PLUS
@@ -194,7 +198,11 @@ public class EvaluationFunctions {
                 if (item instanceof SymtabEntry) {
                     item = ((SymtabEntry) item).getValue();
                 }
-                System.out.print(item);
+                String string = String.valueOf(item).replaceAll("\\\\n", "\n");
+                System.out.print(string);
+                if (((InnerNode)n).getChildCount() > 0) {
+                    code23(n);
+                }
             }
         }
         return null;
@@ -258,6 +266,33 @@ public class EvaluationFunctions {
             }
         }
         return null;
+    }
+
+    private static Object code41(Node astNode) {
+        //multiply the two nodes
+
+        InnerNode node = (InnerNode) astNode;
+        //get left child and unbox if it's an ID
+        Object left = evaluateCode(node.getChild(0));
+        if (left instanceof SymtabEntry) {
+            left = ((SymtabEntry) left).getValue();
+        }
+        //get right child and unbox if it's an ID
+        Object right = evaluateCode(node.getChild(1));
+        if (right instanceof SymtabEntry) {
+            right = ((SymtabEntry) right).getValue();
+        }
+
+        //multiply them with the correct precision
+        if (left instanceof Double && right instanceof Double) {
+            return (Double) left * (Double) right;
+        } else if (left instanceof Double) {
+            return (Double) left * (Integer) right;
+        } else if (right instanceof Double) {
+            return (Integer) left * (Double) right;
+        } else {
+            return (Integer)left * (Integer) right;
+        }
     }
 
     private static Object code45(Node astNode) {
