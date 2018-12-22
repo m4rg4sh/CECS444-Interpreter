@@ -76,7 +76,7 @@ public class EvaluationFunctions {
     }
 
     private static Object code2(Node astNode) {
-        //just return the symtabentry
+        //just return the symtab entry
         return astNode.getSymtabEntry();
     }
 
@@ -142,57 +142,40 @@ public class EvaluationFunctions {
     }
 
     private static Object code15 (Node astNode) {
-        //TODO implement KFLOAT
         //if we don't do typechecking we can ignore this
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     private static Object code16 (Node astNode) {
-        //TODO implement KINT
         //if we don't do typechecking we can ignore this
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     private static Object code17 (Node astNode) {
-        //TODO implement KSTRING
         //if we don't do typechecking we can ignore this
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     private static Object code18 (Node astNode) {
-        //TODO implement KIF
-        if (astNode instanceof InnerNode) {
-            for (Node n : ((InnerNode) astNode).getChildren()) {
-                evaluateCode(n);
-            }
+        if ((Boolean) evaluateCode(((InnerNode) astNode).getChild(0))) {
+            //True
+            return evaluateCode(((InnerNode)astNode).getChild(1));
+        } else if (((InnerNode) astNode).getChildCount() > 2) {
+            // false, w/ elseif or else
+            return evaluateCode(((InnerNode)astNode).getChild(2));
         } else {
-            throw new InterpreterException("kwdif need to have a child node, but none found");
+            //false, no else
+            return null;
         }
-        return null;
     }
 
     private static Object code19 (Node astNode) {
-        //TODO implement KELSEIF
-        if (astNode instanceof InnerNode) {
-            for (Node n : ((InnerNode) astNode).getChildren()) {
-                evaluateCode(n);
-            }
-        } else {
-            throw new InterpreterException("kwdelseif need to have a child node, but none found");
-        }
-        return null;
+        //same as handling an if
+        return code18(astNode);
     }
 
     private static Object code20 (Node astNode) {
-        //TODO implement KELSE
-        if (astNode instanceof InnerNode) {
-            for (Node n : ((InnerNode) astNode).getChildren()) {
-                evaluateCode(n);
-            }
-        } else {
-            throw new InterpreterException("kwdelse need to have a child node, but none found");
-        }
-        return null;
+        return evaluateCode(((InnerNode)astNode).getChild(0));
     }
 
     private static Object code21 (Node astNode) {
