@@ -31,6 +31,6 @@ public class Interpreter {
     private void createScopes() {
         sctBuilder = new SctBuilder();
         sctBuilder.buildSct(ast);
-        sctBuilder.printScopeTree();
+        //sctBuilder.printScopeTree();
     }
 }

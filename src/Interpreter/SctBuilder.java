@@ -75,6 +75,7 @@ public class SctBuilder {
 
     public void printScopeTree() {
         GeneralSctNode printNode = rootNode;
+        System.out.println("\nScope Tree:\n");
         while (true) {
             int index = 0;
             if (printNode instanceof SctNode) {

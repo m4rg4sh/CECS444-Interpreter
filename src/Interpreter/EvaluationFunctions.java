@@ -58,6 +58,8 @@ public class EvaluationFunctions {
                 return code26(astNode);
             case 31: //Angle1
                 return code31(astNode);
+            case 32: //Angle2
+                return code32(astNode);
             case 33: //Brace1
                 return code33(astNode);
             case 37: //Paren1
@@ -66,6 +68,8 @@ public class EvaluationFunctions {
                 return code41(astNode);
             case 45: //EQUAL
                 return code45(astNode);
+            case 46: //Minus
+                return code46(astNode);
             case 47: //PLUS
                 return code47(astNode);
             default:
@@ -248,6 +252,34 @@ public class EvaluationFunctions {
         }
     }
 
+    private static Object code32(Node astNode) {
+        InnerNode node = (InnerNode) astNode;
+
+        //evaluate both kids against each other
+
+        //get left child and unbox if it's an ID
+        Object left = evaluateCode(node.getChild(0));
+        if (left instanceof SymtabEntry) {
+            left = ((SymtabEntry) left).getValue();
+        }
+        //get right child and unbox if it's an ID
+        Object right = evaluateCode(node.getChild(1));
+        if (right instanceof SymtabEntry) {
+            right = ((SymtabEntry) right).getValue();
+        }
+
+        //add them together with the correct precision
+        if (left instanceof Double && right instanceof Double) {
+            return (Double) left > (Double) right;
+        } else if (left instanceof Double) {
+            return (Double) left > (Integer) right;
+        } else if (right instanceof Double) {
+            return (Integer) left > (Double) right;
+        } else {
+            return (Integer)left > (Integer) right;
+        }
+    }
+
     private static Object code33(Node astNode) {
         //just execute whatever comes next if there even is something
         if (astNode instanceof InnerNode) {
@@ -303,6 +335,32 @@ public class EvaluationFunctions {
             return target.getValue(); // c style return
         } else {
             throw new InterpreterException("equal needs to have two child nodes, but none found");
+        }
+    }
+
+    private static Object code46(Node astNode) {
+        //add the two children together
+        InnerNode node = (InnerNode) astNode;
+        //get left child and unbox if it's an ID
+        Object left = evaluateCode(node.getChild(0));
+        if (left instanceof SymtabEntry) {
+            left = ((SymtabEntry) left).getValue();
+        }
+        //get right child and unbox if it's an ID
+        Object right = evaluateCode(node.getChild(1));
+        if (right instanceof SymtabEntry) {
+            right = ((SymtabEntry) right).getValue();
+        }
+
+        //add them together with the correct precision
+        if (left instanceof Double && right instanceof Double) {
+            return (Double) left - (Double) right;
+        } else if (left instanceof Double) {
+            return (Double) left - (Integer) right;
+        } else if (right instanceof Double) {
+            return (Integer) left - (Double) right;
+        } else {
+            return (Integer)left - (Integer) right;
         }
     }
 
