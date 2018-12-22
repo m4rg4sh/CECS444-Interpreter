@@ -8,11 +8,19 @@ import Tokens.IntToken;
 import Tree.Ast.InnerNode;
 import Tree.Ast.Node;
 
-import java.nio.charset.StandardCharsets;
-
-
+/**
+ * This class contains the actual code that executes the given code.
+ * It basically handles the node nodes in a AST recursively
+ *
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ */
 public class EvaluationFunctions {
 
+    /**
+     * Given a AST node this function selects the correct handler and executes it
+     * @param astNode the AST node to be executed
+     * @return the return value of the operation or null.
+     */
     public static Object evaluateCode(Node astNode) {
         switch (astNode.getToken().getId()) { //check which ID to use
             case 1: //COMMENT
@@ -36,8 +44,6 @@ public class EvaluationFunctions {
                 return code11(astNode);
             case 12: //KFCN
                 return code12(astNode);
-            case 13: //KCLASS
-                return code13(astNode);
             case 15: //KFLOAT
                 return code15(astNode);
             case 16: //KINT
@@ -77,35 +83,43 @@ public class EvaluationFunctions {
         }
     }
 
+    /**
+     * Throws an error for a invalid symbol that didn't get removed by the parser
+     * @param astNode the node that caused the error
+     */
     private static void throwException(Node astNode) {
         String symbol = Terminal.valueOf(astNode.getToken().getId()).toString();
         throw new InterpreterException("There should not be a " + symbol + " left by now, however there it is and" +
                 "now we don't know what to do with it");
     }
 
+    //ID
     private static Object code2(Node astNode) {
         //just return the symtab entry
         return astNode.getSymtabEntry();
     }
 
+    //INT
     private static Object code3(Node astNode) {
         //just return the value
         IntToken token = (IntToken) astNode.getToken();
         return token.getValue();
     }
 
+    //FLOAT
     private static Object code4(Node astNode) {
         //just return the value
         FloatToken token = (FloatToken) astNode.getToken();
         return token.getValue();
     }
 
+    //STRING
     private static Object code5(Node astNode) {
         //just return the value
         return astNode.getToken().getCodeString();
     }
 
-
+    //KPROG
     private static Object code10(Node astNode) {
         //kprog doesn't do anything, just evaluate the children
         InnerNode node = (InnerNode) astNode;
@@ -115,6 +129,7 @@ public class EvaluationFunctions {
         return null;
     }
 
+    //KMAIN
     private static Object code11(Node astNode) {
         //kmain doesn't do anything, just evaluate the code that follows
         for (Node child : ((InnerNode)astNode).getChildren()) {
@@ -123,6 +138,7 @@ public class EvaluationFunctions {
         return null;
     }
 
+    //KFCN
     private static Object code12 (Node astNode) {
         //TODO implement KFCN
         //first child is the ID
@@ -137,33 +153,25 @@ public class EvaluationFunctions {
         return null;
     }
 
-    private static Object code13 (Node astNode) {
-        //TODO implement KCLASS
-        if (astNode instanceof InnerNode) {
-            for (Node n : ((InnerNode) astNode).getChildren()) {
-                evaluateCode(n);
-            }
-        } else {
-            throw new InterpreterException("kwdclass need to have a child node, but none found");
-        }
-        return null;
-    }
-
+    //KINT
     private static Object code15 (Node astNode) {
         //if we don't do typechecking we can ignore this
         return null;
     }
 
+    //KFLOAT
     private static Object code16 (Node astNode) {
         //if we don't do typechecking we can ignore this
         return null;
     }
 
+    //KSTRING
     private static Object code17 (Node astNode) {
         //if we don't do typechecking we can ignore this
         return null;
     }
 
+    //KIF
     private static Object code18 (Node astNode) {
         if ((Boolean) evaluateCode(((InnerNode) astNode).getChild(0))) {
             //True
@@ -177,15 +185,18 @@ public class EvaluationFunctions {
         }
     }
 
+    //KELSEIF
     private static Object code19 (Node astNode) {
         //same as handling an if
         return code18(astNode);
     }
 
+    //KELSE
     private static Object code20 (Node astNode) {
         return evaluateCode(((InnerNode)astNode).getChild(0));
     }
 
+    //KWHILE
     private static Object code21 (Node astNode) {
         // evaluate child 0 (condition)
         // if true, execute child 1, else return
@@ -195,6 +206,7 @@ public class EvaluationFunctions {
         return null;
     }
 
+    //KPRINT
     private static Object code23(Node astNode) {
         if (astNode instanceof InnerNode) {
             for (Node n : ((InnerNode) astNode).getChildren()) {
@@ -212,6 +224,7 @@ public class EvaluationFunctions {
         return null;
     }
 
+    //KVAR
     private static Object code26(Node astNode) {
         //kwdvars does nothing on its own, but is always followed by a VarList of vars, so we need to evaluate them
         if (astNode instanceof InnerNode) {
@@ -224,6 +237,7 @@ public class EvaluationFunctions {
         return null;
     }
 
+    //ANGLE1
     private static Object code31(Node astNode) {
         InnerNode node = (InnerNode) astNode;
 
@@ -252,6 +266,7 @@ public class EvaluationFunctions {
         }
     }
 
+    //ANGLE2
     private static Object code32(Node astNode) {
         InnerNode node = (InnerNode) astNode;
 
@@ -280,6 +295,7 @@ public class EvaluationFunctions {
         }
     }
 
+    //BRACE
     private static Object code33(Node astNode) {
         //just execute whatever comes next if there even is something
         if (astNode instanceof InnerNode) {
@@ -290,6 +306,7 @@ public class EvaluationFunctions {
         return null;
     }
 
+    //PARENS1
     private static Object code37(Node astNode) {
         //just execute whatever comes next if there even is something
         if (astNode instanceof InnerNode) {
@@ -300,6 +317,7 @@ public class EvaluationFunctions {
         return null;
     }
 
+    //ASTERISK
     private static Object code41(Node astNode) {
         //multiply the two nodes
 
@@ -327,6 +345,7 @@ public class EvaluationFunctions {
         }
     }
 
+    //EQUAL
     private static Object code45(Node astNode) {
         if (astNode instanceof InnerNode) {
             //assign the righthand expression to the lefthand id
@@ -338,8 +357,9 @@ public class EvaluationFunctions {
         }
     }
 
+    //MINUS
     private static Object code46(Node astNode) {
-        //add the two children together
+        //subtract the two children
         InnerNode node = (InnerNode) astNode;
         //get left child and unbox if it's an ID
         Object left = evaluateCode(node.getChild(0));
@@ -352,7 +372,7 @@ public class EvaluationFunctions {
             right = ((SymtabEntry) right).getValue();
         }
 
-        //add them together with the correct precision
+        //subtract them with the correct precision
         if (left instanceof Double && right instanceof Double) {
             return (Double) left - (Double) right;
         } else if (left instanceof Double) {
@@ -364,6 +384,7 @@ public class EvaluationFunctions {
         }
     }
 
+    //PLUS
     private static Object code47(Node astNode) {
         //add the two children together
         InnerNode node = (InnerNode) astNode;

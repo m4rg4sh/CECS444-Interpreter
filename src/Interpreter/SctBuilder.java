@@ -7,6 +7,11 @@ import Tokens.Token;
 import Tree.Ast.*;
 import Tree.Sct.*;
 
+/**
+ * This class contains the methods needed to walk an AST and build a SCT
+ *
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ */
 public class SctBuilder {
     private SctRootNode rootNode;
     private GeneralSctNode currentNode;
@@ -21,6 +26,10 @@ public class SctBuilder {
         return rootNode;
     }
 
+    /**
+     * recursively walks an AST to create the scope nodes
+     * @param astNode the ast to be walked
+     */
     private void walkAst(Node astNode) {
         handleNode(astNode);
         if (astNode instanceof InnerNode) {
@@ -31,6 +40,10 @@ public class SctBuilder {
         handleNode(astNode);
     }
 
+    /**
+     * Checks a AST node and creates/closes SCT nodes or adds symtab entries to the tree
+     * @param astNode
+     */
     private void handleNode(Node astNode) {
         if (isOpeningNode(astNode)) {
             currentNode = currentNode.openChildScope(astNode);
@@ -52,16 +65,28 @@ public class SctBuilder {
         }
     }
 
+    /**
+     * @param node an AST node
+     * @return true if this node opens a new scope and thus a new SCT node
+     */
     private boolean isOpeningNode(Node node) {
         int tokenIde = node.getToken().getId();
         Terminal symbol = Terminal.valueOf(tokenIde);
         return !node.hasScope() && symbol.createsScope();
     }
 
+    /**
+     * @param node an AST node
+     * @return true if this node closes a existing scope
+     */
     private boolean isClosingNode(Node node) {
         return node.hasScope() && node.getSymbol().createsScope();
     }
 
+    /**
+     * @param astNode a AST node
+     * @return true if this node contains a new identifier that is not yet visible in the SCT
+     */
     private boolean isNewDeclaration(Node astNode) {
         if (isIdentifier(astNode.getToken())) {
             return !currentNode.containsSymbol(astNode.getToken());
@@ -69,10 +94,17 @@ public class SctBuilder {
         return false;
     }
 
+    /**
+     * @param token a token
+     * @return true if the given token is an ID
+     */
     private boolean isIdentifier(Token token) {
         return token.getId() == Terminal.ID.getId();
     }
 
+    /**
+     * prints the scope tree well formatted to the console.
+     */
     public void printScopeTree() {
         GeneralSctNode printNode = rootNode;
         System.out.println("\nScope Tree:\n");
@@ -96,6 +128,11 @@ public class SctBuilder {
         }
     }
 
+    /**
+     * returns the string "null" if the symtab entry is null or returns its value as string
+     * @param o the symtab value
+     * @return the string
+     */
     private String printValue(Object o) {
         if (null == o) {
             return "Null";

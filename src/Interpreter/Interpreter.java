@@ -4,6 +4,11 @@ import Parser.Exceptions.ParserException;
 import Parser.LLParseMachine;
 import Tree.Ast.Node;
 
+/**
+ * This class represents the core logic for the interpreter.
+ *
+ * @author Stefan Brand <stefan.brandepprecht@student.csulb.edu>
+ */
 public class Interpreter {
     private Node ast;
     private SctBuilder sctBuilder;
@@ -22,15 +27,20 @@ public class Interpreter {
         this.ast = ast;
     }
 
+    /**
+     * starts the interpreting logic
+     */
     private void interpret() {
         createScopes();
         EvaluationFunctions.evaluateCode(ast);
         sctBuilder.printScopeTree();
     }
 
+    /*
+     * builds a new scope tree
+     */
     private void createScopes() {
         sctBuilder = new SctBuilder();
         sctBuilder.buildSct(ast);
-        //sctBuilder.printScopeTree();
     }
 }
