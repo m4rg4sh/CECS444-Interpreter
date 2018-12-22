@@ -131,7 +131,14 @@ public class EvaluationFunctions {
 
     private static Object code13 (Node astNode) {
         //TODO implement KCLASS
-        throw new UnsupportedOperationException();
+        if (astNode instanceof InnerNode) {
+            for (Node n : ((InnerNode) astNode).getChildren()) {
+                evaluateCode(n);
+            }
+        } else {
+            throw new InterpreterException("kwdclass need to have a child node, but none found");
+        }
+        return null;
     }
 
     private static Object code15 (Node astNode) {
@@ -154,17 +161,38 @@ public class EvaluationFunctions {
 
     private static Object code18 (Node astNode) {
         //TODO implement KIF
-        throw new UnsupportedOperationException();
+        if (astNode instanceof InnerNode) {
+            for (Node n : ((InnerNode) astNode).getChildren()) {
+                evaluateCode(n);
+            }
+        } else {
+            throw new InterpreterException("kwdif need to have a child node, but none found");
+        }
+        return null;
     }
 
     private static Object code19 (Node astNode) {
         //TODO implement KELSEIF
-        throw new UnsupportedOperationException();
+        if (astNode instanceof InnerNode) {
+            for (Node n : ((InnerNode) astNode).getChildren()) {
+                evaluateCode(n);
+            }
+        } else {
+            throw new InterpreterException("kwdelseif need to have a child node, but none found");
+        }
+        return null;
     }
 
     private static Object code20 (Node astNode) {
         //TODO implement KELSE
-        throw new UnsupportedOperationException();
+        if (astNode instanceof InnerNode) {
+            for (Node n : ((InnerNode) astNode).getChildren()) {
+                evaluateCode(n);
+            }
+        } else {
+            throw new InterpreterException("kwdelse need to have a child node, but none found");
+        }
+        return null;
     }
 
     private static Object code21 (Node astNode) {
